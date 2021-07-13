@@ -315,7 +315,11 @@ void test_Relax()
              });
       });
   }
-
+  /*
+      DPCT1049:0: The workgroup size passed to the SYCL kernel may exceed the
+      limit. To get the device limit, query info::device::max_work_group_size.
+      Adjust the workgroup size if needed.
+      */
   q_ct1.memcpy(u_data, d_u_data, sizeof(double) * grid_size).wait();
 
   sycl::free(d_A_diag_data, q_ct1);
