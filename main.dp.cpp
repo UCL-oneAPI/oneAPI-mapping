@@ -329,6 +329,11 @@ void test_Relax()
   sycl::free(d_f_data, q_ct1);
 
 #ifdef _OPENMP
+      /*
+      DPCT1049:0: The workgroup size passed to the SYCL kernel may exceed the
+      limit. To get the device limit, query info::device::max_work_group_size.
+      Adjust the workgroup size if needed.
+      */
   t1 = omp_get_wtime();
   totalWallTime += t1 - t0;
 #else
