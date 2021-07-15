@@ -64,6 +64,8 @@ def mapping_extraction():
                 single_snippets = ""
                 warning_description_start_flag = False
                 warning_description_end_flag = False
+                
+            # get the line of code below the code snippets
             below_snippets = lines_in_file[line_number + 1]
             print(below_snippets)
             below.append(below_snippets)
