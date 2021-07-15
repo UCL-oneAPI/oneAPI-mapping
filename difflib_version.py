@@ -37,8 +37,8 @@ for line in diff:
     diff_item = str(line)
     preprocessing_diff_collection.append(diff_item)
 
-# for item in preprocessing_diff_collection:
-#     print(item)
+for item in preprocessing_diff_collection:
+    print(item)
 
 # define the flag will be used later
 warning_desc_start = False
@@ -75,8 +75,21 @@ for line in preprocessing_diff_collection:
                 dpct_version_snippets.append(dpct_code_snippet_string)
                 dpct_code_snippet_string = ""
                 dpct_brackets_num = 0
+                # warning_desc_start = False
+                # warning_desc_end = False
+
+        if prefix == "+":
+            print(count_bracket(line))
+            manual_modified_brackets_num += count_bracket(line)
+            manual_modified_code_snippet_string += (line + "\n")
+            if manual_modified_brackets_num == 0:
+                print("in it ")
+                manual_modified_version_snippets.append(dpct_code_snippet_string)
+                manual_modified_code_snippet_string = ""
+                manual_modified_brackets_num = 0
                 warning_desc_start = False
                 warning_desc_end = False
+
 
         # if the prefix is " "  == this line shown in both version
         if prefix == " ":
@@ -98,17 +111,7 @@ for line in preprocessing_diff_collection:
                 warning_desc_start = False
                 warning_desc_end = False
 
-        if prefix == "+":
-            print(count_bracket(line))
-            manual_modified_brackets_num += count_bracket(line)
-            manual_modified_code_snippet_string += (line + "\n")
-            if manual_modified_brackets_num == 0:
-                print("in it ")
-                manual_modified_version_snippets.append(dpct_code_snippet_string)
-                manual_modified_code_snippet_string = ""
-                manual_modified_brackets_num = 0
-                warning_desc_start = False
-                warning_desc_end = False
+
 
 
 
