@@ -1,4 +1,5 @@
 import os
+import difflib_version
 
 allFileNum = 0
 
@@ -27,15 +28,17 @@ def printPath(level, path, root_dir):
         if (os.path.isfile(path + '/' + f)):
             # 添加文件  
             fileList.append(f)
-            ###############f为文件名，应该是在这里检查是否为.cpp文件
 
-            # get the name of the dp.cpp file
-            # print(path.replace("dpcpp", "").replace(root_dir, ''))
-            sub_dir = path.replace("dpcpp", "").replace(root_dir, '')
-            print(path,"/",f)
-            # get the name of the .cpp file
-            print(path.replace("dpcpp", "dpct-version"))
-            print('====================================')
+            # check the file surfix
+            if(f.endswith(".dp.cpp")):
+                print(f)
+                # get the name of the dp.cpp file
+                # print(path.replace("dpcpp", "").replace(root_dir, ''))
+                sub_dir = path.replace("dpcpp", "").replace(root_dir, '')
+                print("dpcpp:","".join([path,"/",f]))
+                # get the name of the .cpp file
+                print("dpct-version:",("".join([path,"/",str(f)])).replace("dpcpp", "dpct-version").replace('dp.cpp','cpp'))
+                print('====================================')
 
             ####可以利用os.path.splitext() 方法: 该方法返回两个元素, 第一个是路径去掉后缀的部分, 第二个是文件后缀:
 
