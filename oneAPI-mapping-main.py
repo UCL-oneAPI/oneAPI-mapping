@@ -6,7 +6,9 @@ def load_file(file_path):
     return f
 
 
+
 def mapping_extraction():
+
     # f = load_file("main.dp.cpp")
     # for f in f.readlines():
     # file_path = "main.dp.cpp"
@@ -29,6 +31,7 @@ def mapping_extraction():
     below_snippets = ""
 
     result = []
+
     up = []
     below = []
 
@@ -46,6 +49,8 @@ def mapping_extraction():
         # detect the the end of the warning description
         if "*/" in lines_in_file[
             line_number] and warning_description_start_flag == True:
+
+
             warning_description_end_flag = True
             line_number += 1
             # jump into the next loop
@@ -53,9 +58,11 @@ def mapping_extraction():
 
         # detect the beginning of the warning context
         if warning_description_end_flag == True and warning_description_start_flag == True:
+
             single_snippets += str(lines_in_file[line_number])
             front_bracket_number = lines_in_file[line_number].count("{")
             back_bracket_number = lines_in_file[line_number].count("}")
+
             bracket_number += (front_bracket_number - back_bracket_number)
 
             # detect the end of the warning context
@@ -64,6 +71,7 @@ def mapping_extraction():
                 single_snippets = ""
                 warning_description_start_flag = False
                 warning_description_end_flag = False
+
                 
             # get the line of code below the code snippets
             below_snippets = lines_in_file[line_number + 1]
@@ -77,9 +85,11 @@ def mapping_extraction():
     return up, below
 
 
+
 def mapping_extraction_manual_modifications():
     f = load_file("main.cpp")
     lines_in_file = f.readlines()
+
 
     bracket_stack = []
     code_snippets = []
@@ -97,3 +107,5 @@ def mapping_extraction_manual_modifications():
 
 
 mapping_extraction_manual_modifications()
+
+
