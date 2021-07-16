@@ -10,17 +10,17 @@ def read_file(file_name):
         file_desc.close()
         return text
     except IOError as error:
-        print 'Read input file Error: {0}'.format(error)
+        print('Read input file Error: {0}'.format(error))
         sys.exit()
 
 
 
 def compare_file(file1, file2):
     if file1 == "" or file2 == "":
-        print "should not be empty"
+        print ("should not be empty")
         sys.exit()
     else:
-        print "comparision..."
+        print( "comparision...")
     text1_lines = read_file(file1)
     text2_lines = read_file(file2)
     diff = difflib.HtmlDiff()    
@@ -33,9 +33,9 @@ def compare_file(file1, file2):
     try:
         with open('result_comparation.html', 'w') as result_file:
             result_file.write(result)
-            print "0==}==========> Successfully Finished\n"
+            print ("0==}==========> Successfully Finished\n")
     except IOError as error:
-        print "wrong thml"
+        print ("wrong thml")
 
 
 if __name__ == "__main__":
