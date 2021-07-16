@@ -10,12 +10,114 @@ def load_file(file_path):
 
 
 def count_bracket(string_statement):
-    front_bracket_number = line.count("{")
-    back_bracket_number = line.count("}")
+    front_bracket_number = string_statement.count("{")
+    back_bracket_number = string_statement.count("}")
     bracket_count = front_bracket_number - back_bracket_number
     return bracket_count
 
+def mappint_extraction(dpcpp_file_path, manual_file_path):
+    # define the differ used
+    diff_module = difflib.Differ()
+    # use html differ to generate html diagram
 
+    # get the context of two files
+    # dpct_version_string_list = load_file('main.dp.cpp')
+    # manual_modified_string_list = load_file('main.cpp')
+
+    dpct_version_string_list = load_file(dpcpp_file_path)
+    manual_modified_string_list = load_file(manual_file_path)
+    dpct_version_string_list = dpct_version_string_list.splitlines()
+    manual_modified_string_list = manual_modified_string_list.splitlines()
+
+    # using the differ to generate the "differ" collection
+    # diff = difflib.context_diff(dpct_version_string_list, manual_modified_string_list)
+    diff = diff_module.compare(dpct_version_string_list, manual_modified_string_list)
+
+    # define the differ_collection
+    preprocessing_diff_collection = []
+    for line in diff:
+        diff_item = str(line)
+        preprocessing_diff_collection.append(diff_item)
+
+    for item in preprocessing_diff_collection:
+        print(item)
+
+    # define the flag will be used later
+    warning_desc_start = False
+    warning_desc_end = False
+
+    dpct_version_snippets = []
+    manual_modified_version_snippets = []
+    dpct_brackets_num = 0
+    manual_modified_brackets_num = 0
+
+    dpct_code_snippet_string = ""
+    manual_modified_code_snippet_string = ""
+
+    # loop through all lines
+    for line in preprocessing_diff_collection:
+        # detect the warning description start
+        if "DPCT" in line:
+            warning_desc_start = True
+
+        # detect the warning description end
+        if "*/" in line and warning_desc_start == True:
+            warning_desc_end = True
+            continue  # jump into another loop
+
+        # detect the warning context start
+        if warning_desc_start == warning_desc_end == True:
+            prefix = line[0]
+
+            # if the prefix is " "  == this line shown in dpct version
+            if prefix == "-":
+                dpct_brackets_num += count_bracket(line)
+                dpct_code_snippet_string += (line[1:] + "\n")
+                if dpct_brackets_num == 0:
+                    dpct_version_snippets.append(dpct_code_snippet_string)
+                    dpct_code_snippet_string = ""
+                    dpct_brackets_num = 0
+                    # warning_desc_start = False
+                    # warning_desc_end = False
+
+            if prefix == "+":
+                print(count_bracket(line))
+                manual_modified_brackets_num += count_bracket(line)
+                manual_modified_code_snippet_string += (line[1:] + "\n")
+                if manual_modified_brackets_num == 0:
+                    print("in it ")
+                    manual_modified_version_snippets.append(manual_modified_code_snippet_string)
+                    manual_modified_code_snippet_string = ""
+                    manual_modified_brackets_num = 0
+                    warning_desc_start = False
+                    warning_desc_end = False
+
+            # if the prefix is " "  == this line shown in both version
+            if prefix == " ":
+                dpct_brackets_num += count_bracket(line)
+                manual_modified_brackets_num += count_bracket(line)
+                dpct_code_snippet_string += (line[1:] + "\n")
+                manual_modified_code_snippet_string += (line[1:] + "\n")
+                if dpct_brackets_num == 0:
+                    dpct_version_snippets.append(dpct_code_snippet_string)
+                    dpct_code_snippet_string = ""
+                    dpct_brackets_num = 0
+                    warning_desc_start = False
+                    warning_desc_end = False
+
+                if manual_modified_brackets_num == 0:
+                    manual_modified_version_snippets.append(manual_modified_code_snippet_string)
+                    manual_modified_code_snippet_string = ""
+                    manual_modified_brackets_num = 0
+                    warning_desc_start = False
+                    warning_desc_end = False
+
+    return dpct_version_snippets,manual_modified_version_snippets
+
+a = mappint_extraction('main.dp.cpp','main.cpp')
+print(a)
+
+'''
 # define the differ used
 diff_module = difflib.Differ()
 # use html differ to generate html diagram
@@ -70,7 +172,7 @@ for line in preprocessing_diff_collection:
         # if the prefix is " "  == this line shown in dpct version
         if prefix == "-":
             dpct_brackets_num += count_bracket(line)
-            dpct_code_snippet_string += (line+"\n")
+            dpct_code_snippet_string += (line[1:]+"\n")
             if dpct_brackets_num == 0:
                 dpct_version_snippets.append(dpct_code_snippet_string)
                 dpct_code_snippet_string = ""
@@ -81,10 +183,10 @@ for line in preprocessing_diff_collection:
         if prefix == "+":
             print(count_bracket(line))
             manual_modified_brackets_num += count_bracket(line)
-            manual_modified_code_snippet_string += (line + "\n")
+            manual_modified_code_snippet_string += (line[1:] + "\n")
             if manual_modified_brackets_num == 0:
                 print("in it ")
-                manual_modified_version_snippets.append(dpct_code_snippet_string)
+                manual_modified_version_snippets.append(manual_modified_code_snippet_string)
                 manual_modified_code_snippet_string = ""
                 manual_modified_brackets_num = 0
                 warning_desc_start = False
@@ -95,8 +197,8 @@ for line in preprocessing_diff_collection:
         if prefix == " ":
             dpct_brackets_num += count_bracket(line)
             manual_modified_brackets_num += count_bracket(line)
-            dpct_code_snippet_string += (line+"\n")
-            manual_modified_code_snippet_string += (line+"\n")
+            dpct_code_snippet_string += (line[1:]+"\n")
+            manual_modified_code_snippet_string += (line[1:]+"\n")
             if dpct_brackets_num == 0:
                 dpct_version_snippets.append(dpct_code_snippet_string)
                 dpct_code_snippet_string = ""
@@ -110,20 +212,5 @@ for line in preprocessing_diff_collection:
                 manual_modified_brackets_num = 0
                 warning_desc_start = False
                 warning_desc_end = False
+'''
 
-
-
-
-
-print("a")
-
-
-# result_collection = ""
-# for line in diff:
-#     result_collection += str(line)
-# print(result_collection.split('\n'))
-
-#
-# with open('htmlout.html','a+') as fo:
-#     fo.write(html_diff.make_file(loads,mems))
-#     fo.close()
