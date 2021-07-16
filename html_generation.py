@@ -32,4 +32,4 @@ def read_file(file):
     read = f.readlines()
     return read
 
-#find_dpcpp()
+find_dpcpp()
