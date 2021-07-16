@@ -40,8 +40,15 @@ def printPath(level, path, root_dir):
                 # get the name of the .cpp file
                 b  = ("".join([path,"/",str(f)])).replace("dpcpp", "dpct-version").replace('dp.cpp','cpp')
                 print("dpct-version:",b)
+
                 difflib_version.mappint_extraction(a,b)
                 print('====================================')
+                # Error message
+                # No such file or directory: '../oneAPI-DirectProgramming-training/diamond/dpct-version/masking.cpp'
+                #masking.dp.cpp
+                #dpcpp: ../oneAPI-DirectProgramming-training/diamond/dpcpp/masking.dp.cpp
+                #dpct-version: ../oneAPI-DirectProgramming-training/diamond/dpct-version/masking.cpp
+
 
             ####可以利用os.path.splitext() 方法: 该方法返回两个元素, 第一个是路径去掉后缀的部分, 第二个是文件后缀:
 
