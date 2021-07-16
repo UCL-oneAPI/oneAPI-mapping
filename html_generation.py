@@ -2,6 +2,20 @@ import difflib
 from pathlib import Path
 
 
+def find_dpcpp():
+    root = Path.cwd()
+    dpcpp_dir = root/Path('dpcpp')
+    dpct_dir = root/Path('dpct-version')
+    for i in dpcpp_dir.rglob('*.dp.cpp'):
+        dpcpp_path = str(i.parent)
+        temp = i.stem
+        fname = temp.split('.')[0]
+        for j in dpct_dir.rglob('*.cpp'):
+            if fname == j.stem:
+                dpct_path = str(j.parent)
+                generate_html(dpcpp_path+'/'+fname+'.dp.cpp', dpct_path+'/'+fname+'.cpp', fname)
+
+
 def generate_html(file1, file2, name):
     read1 = read_file(file1)
     read2 = read_file(file2)
@@ -14,9 +28,8 @@ def generate_html(file1, file2, name):
 
 
 def read_file(file):
-    f = open(file,"r+",encoding='UTF-8')
+    f = open(file, "r+", encoding='UTF-8')
     read = f.readlines()
     return read
 
-
-# generate_html('main.cpp', 'main.dp.cpp','main')
+#find_dpcpp()
