@@ -15,7 +15,7 @@ def count_bracket(string_statement):
     bracket_count = front_bracket_number - back_bracket_number
     return bracket_count
 
-def mappint_extraction(dpcpp_file_path, manual_file_path):
+def mapping_extraction(dpcpp_file_path, manual_file_path):
     # define the differ used
     diff_module = difflib.Differ()
     # use html differ to generate html diagram
@@ -114,7 +114,7 @@ def mappint_extraction(dpcpp_file_path, manual_file_path):
 
     return dpct_version_snippets,manual_modified_version_snippets
 
-a = mappint_extraction('main.dp.cpp','main.cpp')
+a = mapping_extraction('main.dp.cpp', 'main.cpp')
 print(a)
 
 '''

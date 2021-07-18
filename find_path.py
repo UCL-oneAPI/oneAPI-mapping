@@ -41,7 +41,7 @@ def printPath(level, path, root_dir):
                 b  = ("".join([path,"/",str(f)])).replace("dpcpp", "dpct-version").replace('dp.cpp','cpp')
                 print("dpct-version:",b)
 
-                difflib_version.mappint_extraction(a,b)
+                difflib_version.mapping_extraction(a, b)
                 print('====================================')
                 # Error message
                 # No such file or directory: '../oneAPI-DirectProgramming-training/diamond/dpct-version/masking.cpp'
