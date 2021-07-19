@@ -49,6 +49,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
     dpct_version_snippets = []
     manual_modified_version_snippets = []
+    warning_message_version_snippets = []
     dpct_brackets_num = 0
     manual_modified_brackets_num = 0
 
@@ -101,7 +102,8 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
             if prefix == "-" and warning_desc_end == True :
                 # warning message
                 if w_massage_time == 0:
-                    dpct_version_snippets.append(warning_message)
+                    warning_message_version_snippets.append(warning_message)
+                    warning_message = ""
                     w_massage_time = 1
 
 
@@ -148,11 +150,11 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
 
 
-    return dpct_version_snippets,manual_modified_version_snippets
+    return dpct_version_snippets,manual_modified_version_snippets,warning_message_version_snippets
 
 # change here!!!!! for testing !!!!!!
-dpct_snippets_result, manual_snippets_result = mapping_extraction('clenergy.dp.cpp', 'clenergy.cpp')
-print(dpct_snippets_result,manual_snippets_result)
+dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('clenergy.dp.cpp', 'clenergy.cpp')
+print(dpct_snippets_result,manual_snippets_result,warning_message_version_snippets)
 
 
 '''
