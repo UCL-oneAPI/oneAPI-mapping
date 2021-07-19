@@ -2,13 +2,17 @@ import os
 import difflib_version
 
 allFileNum = 0
-
+mapping_result = {}
 
 def file_existing_check(file_path):
     return os.path.exists(file_path)
 
 def printPath(level, path, root_dir):
-    global allFileNum
+    global allFileNum,mapping_result
+
+    # define the map (collect the mapping)
+
+
     ''''' 
     打印一个目录下的所有文件夹和文件 
     '''
@@ -45,8 +49,12 @@ def printPath(level, path, root_dir):
 
                 # check file existing
                 if(file_existing_check(a) and file_existing_check(b)):
-                    # difflib_version.mapping_extraction(a, b)
-                    print('both existing ')
+                    file_name = a
+                    print("filename: ",a)
+                    dpct_snippets, manual_snippets = difflib_version.mapping_extraction(a, b)
+                    for i in range(len(dpct_snippets)):
+                        mapping_result[dpct_snippets[i]] = manual_snippets[i]
+    print(mapping_result)
 
 
                 # Error message

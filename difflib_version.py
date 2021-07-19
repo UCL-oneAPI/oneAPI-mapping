@@ -40,8 +40,8 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         preprocessing_diff_collection.append(diff_item)
 
     # print the context of the differ
-    # for item in preprocessing_diff_collection:
-    #     print(item)
+    for item in preprocessing_diff_collection:
+        print(item)
 
     # define the flag will be used later
     warning_desc_start = False
@@ -67,11 +67,11 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
             continue  # jump into another loop
 
         # detect the warning context start
-        if warning_desc_start == warning_desc_end == True:
+        if warning_desc_start ==  True:
             prefix = line[0]
 
             # if the prefix is " "  == this line shown in dpct version
-            if prefix == "-":
+            if prefix == "-" and warning_desc_end == True:
                 dpct_brackets_num += count_bracket(line)
                 dpct_code_snippet_string += (line[1:] + "\n")
                 if dpct_brackets_num == 0:
@@ -82,7 +82,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                     # warning_desc_end = False
 
             if prefix == "+":
-                print(count_bracket(line))
+                # print(count_bracket(line))
                 manual_modified_brackets_num += count_bracket(line)
                 manual_modified_code_snippet_string += (line[1:] + "\n")
                 if manual_modified_brackets_num == 0:
@@ -90,7 +90,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                     manual_modified_version_snippets.append(manual_modified_code_snippet_string)
                     manual_modified_code_snippet_string = ""
                     manual_modified_brackets_num = 0
-                    warning_desc_start = False
+                    # warning_desc_start = False
                     warning_desc_end = False
 
             # if the prefix is " "  == this line shown in both version
@@ -115,7 +115,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
     return dpct_version_snippets,manual_modified_version_snippets
 
-a = mapping_extraction('main.dp.cpp', 'main.cpp')
+a = mapping_extraction('kernel.dp.cpp', 'kernel.cpp')
 print(a)
 
 '''
