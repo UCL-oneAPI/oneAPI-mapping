@@ -66,10 +66,10 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
             warning_desc_end = True
             continue  # jump into another loop
 
-        if "/*" in line and warning_desc_end == True:
-            warning_desc_end = False
-            print("In this if condition")
-            continue
+        # if "/*" in line and warning_desc_end == True:
+        #     warning_desc_end = False
+        #     print("In this if condition")
+        #     continue
 
         # detect the warning context start
         if warning_desc_start ==  True:
