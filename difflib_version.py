@@ -55,15 +55,22 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
     dpct_code_snippet_string = ""
     manual_modified_code_snippet_string = ""
 
+    warning_message = ""
+    w_massage_time = 0
+
     # loop through all lines
     for line in preprocessing_diff_collection:
         # detect the warning description start
+
+
         if "DPCT" in line:
             warning_desc_start = True
+
 
         # detect the warning description end
         if "*/" in line and warning_desc_start == True:
             warning_desc_end = True
+
             continue  # jump into another loop
 
         # if "/*" in line and warning_desc_end == True:
@@ -74,9 +81,17 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         # detect the warning context start
         if warning_desc_start ==  True:
             prefix = line[0]
+            if prefix == "-" and warning_desc_end == False:
+                warning_message += (line[1:] + "\n")
+
 
             # if the prefix is " "  == this line shown in dpct version
             if prefix == "-" and warning_desc_end == True :
+                if w_massage_time == 0:
+                    dpct_version_snippets.append(warning_message)
+                    w_massage_time = 1
+
+
                 dpct_brackets_num += count_bracket(line)
                 dpct_code_snippet_string += (line[1:] + "\n")
                 if dpct_brackets_num == 0:
