@@ -59,21 +59,31 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
     warning_message = ""
     # use of detect warning message only record in one time
     w_massage_time = 0
+    # warning detection: ensure there is no warning message followed
+    # 0 = not have one  , >1 the number of warning message
+    w_detect = 0
 
     # loop through all lines
-    for line in preprocessing_diff_collection:
+    #for line in preprocessing_diff_collection:
+    i = 0
+    while i < len(preprocessing_diff_collection):
+        line = preprocessing_diff_collection[i]
+        i += 1
         # detect the warning description start
 
 
-        if "DPCT" in line:
+        if "/*" in line and "DPCT" in preprocessing_diff_collection[i]:
             warning_desc_start = True
 
 
         # detect the warning description end
         if "*/" in line and warning_desc_start == True:
-            warning_desc_end = True
-
-            continue  # jump into another loop
+            #w_detect += 1
+            if "/*" not in preprocessing_diff_collection[i]:
+                print("&&&&&&&&&&&")
+                print(preprocessing_diff_collection[i])
+                warning_desc_end = True
+                continue  # jump into another loop
 
         # if "/*" in line and warning_desc_end == True:
         #     warning_desc_end = False
@@ -81,7 +91,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         #     continue
 
         # detect the warning context start
-        if warning_desc_start ==  True:
+        if  warning_desc_start ==  True:
             prefix = line[0]
             if prefix == "-" and warning_desc_end == False:
                 warning_message += (line[1:] + "\n")
@@ -135,6 +145,8 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                     manual_modified_brackets_num = 0
                     warning_desc_start = False
                     warning_desc_end = False
+
+
 
     return dpct_version_snippets,manual_modified_version_snippets
 
