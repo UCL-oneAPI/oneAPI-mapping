@@ -4,6 +4,9 @@ import difflib_version
 allFileNum = 0
 
 
+def file_existing_check(file_path):
+    return os.path.exists(file_path)
+
 def printPath(level, path, root_dir):
     global allFileNum
     ''''' 
@@ -26,23 +29,26 @@ def printPath(level, path, root_dir):
             else:  # 非隐藏文件夹
                 dirList.append(f)
         if (os.path.isfile(path + '/' + f)):
-            # 添加文件  
             fileList.append(f)
 
             # check the file surfix
             if(f.endswith(".dp.cpp")):
-                print(f)
+
                 # get the name of the dp.cpp file
-                # print(path.replace("dpcpp", "").replace(root_dir, ''))
                 sub_dir = path.replace("dpcpp", "").replace(root_dir, '')
                 a = "".join([path,"/",f])
-                print("dpcpp:",a)
+                # print("dpcpp:",a)
+
                 # get the name of the .cpp file
                 b  = ("".join([path,"/",str(f)])).replace("dpcpp", "dpct-version").replace('dp.cpp','cpp')
-                print("dpct-version:",b)
+                # print("dpct-version:",b)
 
-                difflib_version.mapping_extraction(a, b)
-                print('====================================')
+                # check file existing
+                if(file_existing_check(a) and file_existing_check(b)):
+                    # difflib_version.mapping_extraction(a, b)
+                    print('both existing ')
+
+
                 # Error message
                 # No such file or directory: '../oneAPI-DirectProgramming-training/diamond/dpct-version/masking.cpp'
                 #masking.dp.cpp

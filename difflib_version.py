@@ -39,8 +39,9 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         diff_item = str(line)
         preprocessing_diff_collection.append(diff_item)
 
-    for item in preprocessing_diff_collection:
-        print(item)
+    # print the context of the differ
+    # for item in preprocessing_diff_collection:
+    #     print(item)
 
     # define the flag will be used later
     warning_desc_start = False
