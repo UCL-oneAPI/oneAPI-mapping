@@ -55,7 +55,9 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
     dpct_code_snippet_string = ""
     manual_modified_code_snippet_string = ""
 
+    # warning message
     warning_message = ""
+    # use of detect warning message only record in one time
     w_massage_time = 0
 
     # loop through all lines
@@ -87,6 +89,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
             # if the prefix is " "  == this line shown in dpct version
             if prefix == "-" and warning_desc_end == True :
+                # warning message
                 if w_massage_time == 0:
                     dpct_version_snippets.append(warning_message)
                     w_massage_time = 1
