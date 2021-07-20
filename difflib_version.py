@@ -97,6 +97,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
         # detect the warning context start
         if  warning_desc_start ==  True:
+            #print("line:",line," i:",i)
             prefix = line[0]
             if prefix == "-" and warning_desc_end == False:
                 warning_message += (line[1:] + "\n")
@@ -142,19 +143,20 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
             # if the prefix is " "  == this line shown in both version
             if prefix == " " :
-
                 dpct_brackets_num += count_bracket(line)
                 manual_modified_brackets_num += count_bracket(line)
                 dpct_code_snippet_string += (line[1:] + "\n")
+                #print("----------------------------- ：",dpct_code_snippet_string,"00000")
                 manual_modified_code_snippet_string += (line[1:] + "\n")
-                if dpct_brackets_num == 0 and line[-2] != "\\":
+                if dpct_brackets_num == 0 and line[-2] != "\\" and line[1:] != ' ':
+
                     dpct_version_snippets.append(dpct_code_snippet_string)
                     dpct_code_snippet_string = ""
                     dpct_brackets_num = 0
                     warning_desc_start = False
                     warning_desc_end = False
 
-                if manual_modified_brackets_num == 0:
+                if manual_modified_brackets_num == 0 and line[1:] != ' ':
                     manual_modified_version_snippets.append(manual_modified_code_snippet_string)
                     manual_modified_code_snippet_string = ""
                     manual_modified_brackets_num = 0
