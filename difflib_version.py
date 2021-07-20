@@ -109,7 +109,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
                 dpct_brackets_num += count_bracket(line)
                 dpct_code_snippet_string += (line[1:] + "\n")
-                if dpct_brackets_num == 0:
+                if dpct_brackets_num == 0 and line[-1] != "\\":
                     dpct_version_snippets.append(dpct_code_snippet_string)
                     dpct_code_snippet_string = ""
                     dpct_brackets_num = 0
@@ -120,8 +120,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                 # print(count_bracket(line))
                 manual_modified_brackets_num += count_bracket(line)
                 manual_modified_code_snippet_string += (line[1:] + "\n")
-                if manual_modified_brackets_num == 0:
-                    print("in it ")
+                if manual_modified_brackets_num == 0 and line[-1] != "\\":
                     manual_modified_version_snippets.append(manual_modified_code_snippet_string)
                     manual_modified_code_snippet_string = ""
                     manual_modified_brackets_num = 0
@@ -134,7 +133,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                 manual_modified_brackets_num += count_bracket(line)
                 dpct_code_snippet_string += (line[1:] + "\n")
                 manual_modified_code_snippet_string += (line[1:] + "\n")
-                if dpct_brackets_num == 0:
+                if dpct_brackets_num == 0 and line[-2] != "\\":
                     dpct_version_snippets.append(dpct_code_snippet_string)
                     dpct_code_snippet_string = ""
                     dpct_brackets_num = 0
