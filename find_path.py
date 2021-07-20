@@ -2,7 +2,7 @@ import os
 import difflib_version
 
 allFileNum = 0
-mapping_result = []
+mapping_result = {}
 
 def file_existing_check(file_path):
     return os.path.exists(file_path)
@@ -53,8 +53,12 @@ def printPath(level, path, root_dir):
                     print("filename: ",a)
                     dpct_snippets, manual_snippets,warning_messages = difflib_version.mapping_extraction(a, b)
                     for i in range(len(dpct_snippets)):
+                        if a not in mapping_result.keys():
+                            mapping_result[a] = [{"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]}]
                         # mapping_result.append({"warning message":warning_messages[i],"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]})
-                        mapping_result.append({"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]})
+                        else:
+                            mapping_result[a].append({"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]})
+                        # mapping_result[a] = ({"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]})
 
                         # print(warning_messages[i])
     # print(mapping_result)
