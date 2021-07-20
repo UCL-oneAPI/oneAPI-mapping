@@ -100,6 +100,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
             prefix = line[0]
             if prefix == "-" and warning_desc_end == False:
                 warning_message += (line[1:] + "\n")
+                w_massage_time = 0
 
 
             # if the prefix is " "  == this line shown in dpct version
