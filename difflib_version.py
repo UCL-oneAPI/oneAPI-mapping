@@ -40,8 +40,8 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         preprocessing_diff_collection.append(diff_item)
 
     # print the context of the differ
-    for item in preprocessing_diff_collection:
-        print(item)
+    # for item in preprocessing_diff_collection:
+    #     print(item)
 
     # define the flag will be used later
     warning_desc_start = False
