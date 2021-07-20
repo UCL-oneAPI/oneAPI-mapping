@@ -64,6 +64,9 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
     # 0 = not have one  , >1 the number of warning message
     w_detect = 0
 
+    before_mark = ""
+    after_mark = ""
+
     # loop through all lines
     #for line in preprocessing_diff_collection:
     i = 0
@@ -75,6 +78,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
         if "/*" in line and "DPCT" in preprocessing_diff_collection[i]:
             warning_desc_start = True
+            before_mark = preprocessing_diff_collection[i-2]
 
 
         # detect the warning description end
@@ -113,8 +117,14 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                     dpct_version_snippets.append(dpct_code_snippet_string)
                     dpct_code_snippet_string = ""
                     dpct_brackets_num = 0
+
+                    # new added
+                    after_mark = preprocessing_diff_collection[i]
                     # warning_desc_start = False
                     # warning_desc_end = False
+                    if after_mark[0] != "+" and after_mark[0] != "\\":
+                            manual_modified_version_snippets.append("")
+                            warning_desc_end = False
 
             if prefix == "+":
                 # print(count_bracket(line))
@@ -127,8 +137,11 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                     # warning_desc_start = False
                     warning_desc_end = False
 
+
+
             # if the prefix is " "  == this line shown in both version
             if prefix == " " :
+
                 dpct_brackets_num += count_bracket(line)
                 manual_modified_brackets_num += count_bracket(line)
                 dpct_code_snippet_string += (line[1:] + "\n")
