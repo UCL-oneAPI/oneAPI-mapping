@@ -46,6 +46,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
     # define the flag will be used later
     warning_desc_start = False
     warning_desc_end = False
+    dpct_version_extraction_complete = False
 
     dpct_version_snippets = []
     manual_modified_version_snippets = []
@@ -66,25 +67,32 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
             warning_desc_end = True
             continue  # jump into another loop
 
-        # if "/*" in line and warning_desc_end == True:
-        #     warning_desc_end = False
-        #     print("In this if condition")
-        #     continue
+        if "/*" in line and warning_desc_end == True:
+            warning_desc_end = False
+            print("In this if condition")
+            continue
 
         # detect the warning context start
         if warning_desc_start ==  True:
             prefix = line[0]
 
+            # if "#" in line[0:]:
+            #     continue
+
             # if the prefix is " "  == this line shown in dpct version
             if prefix == "-" and warning_desc_end == True :
                 dpct_brackets_num += count_bracket(line)
                 dpct_code_snippet_string += (line[1:] + "\n")
-                if dpct_brackets_num == 0:
+                if dpct_brackets_num == 0 and line[-1] != "\\":
                     dpct_version_snippets.append(dpct_code_snippet_string)
                     dpct_code_snippet_string = ""
                     dpct_brackets_num = 0
+                    dpct_version_extraction_complete = True
                     # warning_desc_start = False
                     # warning_desc_end = False
+                if dpct_version_extraction_complete == True and dpct_brackets_num == 0:
+                    print("!!!!!!!!!!!!!!!",line)
+                    manual_modified_version_snippets.append("")
 
             if prefix == "+":
                 # print(count_bracket(line))
