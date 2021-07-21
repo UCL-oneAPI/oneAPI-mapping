@@ -56,11 +56,18 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
     dpct_code_snippet_string = ""
     manual_modified_code_snippet_string = ""
 
+    # set flag for detect the end of snippets extractions
+    dpct_warning_extraction_complete = False
+    manual_warning_extraction_complete = False
+
     # loop through all lines
     for line in preprocessing_diff_collection:
         # detect the warning description start
         if "DPCT" in line:
             warning_desc_start = True
+
+            # set extraction flag to False
+            dpct_warning_extraction_complete, manual_warning_extraction_complete = False, False
 
         # detect the warning description end
         if "*/" in line and warning_desc_start == True:
@@ -69,7 +76,6 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
         if "/*" in line and warning_desc_end == True:
             warning_desc_end = False
-            print("In this if condition")
             continue
 
         # detect the warning context start
@@ -88,23 +94,32 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                     dpct_code_snippet_string = ""
                     dpct_brackets_num = 0
                     dpct_version_extraction_complete = True
+
                     # warning_desc_start = False
                     # warning_desc_end = False
+
+                    # set flag for extraction complete
+                    dpct_warning_extraction_complete = True
+
                 if dpct_version_extraction_complete == True and dpct_brackets_num == 0:
-                    print("!!!!!!!!!!!!!!!",line)
                     manual_modified_version_snippets.append("")
+
+                    # set extraction complete flag
+                    manual_warning_extraction_complete = True
 
             if prefix == "+":
                 # print(count_bracket(line))
                 manual_modified_brackets_num += count_bracket(line)
                 manual_modified_code_snippet_string += (line[1:] + "\n")
                 if manual_modified_brackets_num == 0:
-                    print("in it ")
                     manual_modified_version_snippets.append(manual_modified_code_snippet_string)
                     manual_modified_code_snippet_string = ""
                     manual_modified_brackets_num = 0
+
                     # warning_desc_start = False
-                    warning_desc_end = False
+                    # warning_desc_end = False
+
+                    manual_warning_extraction_complete = True
 
             # if the prefix is " "  == this line shown in both version
             if prefix == " " :
@@ -116,20 +131,31 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                     dpct_version_snippets.append(dpct_code_snippet_string)
                     dpct_code_snippet_string = ""
                     dpct_brackets_num = 0
-                    warning_desc_start = False
-                    warning_desc_end = False
+
+                    # warning_desc_start = False
+                    # warning_desc_end = False
+
+                    dpct_warning_extraction_complete = True
 
                 if manual_modified_brackets_num == 0:
                     manual_modified_version_snippets.append(manual_modified_code_snippet_string)
                     manual_modified_code_snippet_string = ""
                     manual_modified_brackets_num = 0
-                    warning_desc_start = False
-                    warning_desc_end = False
+
+                    # warning_desc_start = False
+                    # warning_desc_end = False
+
+                    manual_warning_extraction_complete = True
+        if manual_warning_extraction_complete == dpct_warning_extraction_complete == True:
+            warning_desc_start,warning_desc_end = False, False
+                # if manual_modified_brackets_num == dpct_brackets_num == 0:
+                #     warning_desc_start = False
+                #     warning_desc_end = False
 
     return dpct_version_snippets,manual_modified_version_snippets
 
 # change here!!!!! for testing !!!!!!
-dpct_snippets_result, manual_snippets_result = mapping_extraction('clenergy.dp.cpp', 'clenergy.cpp')
+dpct_snippets_result, manual_snippets_result = mapping_extraction('../oneAPI-DirectProgramming-training/rng-wallace/dpcpp/main.dp.cpp', '../oneAPI-DirectProgramming-training/rng-wallace/dpct-version/main.cpp')
 print(dpct_snippets_result,manual_snippets_result)
 
 

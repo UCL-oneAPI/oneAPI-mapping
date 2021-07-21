@@ -54,7 +54,7 @@ def printPath(level, path, root_dir):
                     dpct_snippets, manual_snippets = difflib_version.mapping_extraction(a, b)
                     for i in range(len(dpct_snippets)):
                         mapping_result[dpct_snippets[i]] = manual_snippets[i]
-    print(mapping_result)
+    # print(mapping_result)
 
 
                 # Error message
