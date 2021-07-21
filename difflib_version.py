@@ -122,8 +122,8 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
                     # new added
                     after_mark = preprocessing_diff_collection[i]
-                    # warning_desc_start = False
-                    # warning_desc_end = False
+                    warning_desc_start = False
+                    warning_desc_end = False
                     if after_mark[0] != "+" and after_mark[0] != "\\":
                             manual_modified_version_snippets.append("")
                             warning_desc_end = False
