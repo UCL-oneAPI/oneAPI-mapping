@@ -168,7 +168,8 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
     return dpct_version_snippets,manual_modified_version_snippets,warning_message_version_snippets
 
 # change here!!!!! for testing !!!!!!
-dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('clenergy.dp.cpp', 'clenergy.cpp')
+#dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('compact.dp.cpp', 'compact.cpp')
+dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('../oneAPI-DirectProgramming-training/multimaterial/dpcpp/compact.dp.cpp', '../oneAPI-DirectProgramming-training/multimaterial/dpct-version/compact.cpp')
 print(dpct_snippets_result,manual_snippets_result,warning_message_version_snippets)
 
 
