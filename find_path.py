@@ -92,8 +92,7 @@ def printPath(level, path, root_dir):
 
 
 def iterate_all_projects():
-    folders = [f for f in os.listdir("../oneAPI-DirectProgramming-training/") if not f.startswith('.')]
-    for folder in folders:
+    for folder in os.listdir("../oneAPI-DirectProgramming-training/"):
         printPath(1, '../oneAPI-DirectProgramming-training/'+folder+'/dpcpp',
                   '../oneAPI-DirectProgramming-training/'+folder)
         # print('../oneAPI-DirectProgramming-training/'+folder+'/dpcpp')
