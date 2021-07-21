@@ -40,8 +40,8 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         preprocessing_diff_collection.append(diff_item)
 
     # print the context of the differ
-    for item in preprocessing_diff_collection:
-         print(item)
+    # for item in preprocessing_diff_collection:
+    #      print(item)
 
     # define the flag will be used later
     warning_desc_start = False
@@ -91,8 +91,8 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         if "*/" in line and warning_desc_start == True:
             #w_detect += 1
             if "/*" not in preprocessing_diff_collection[i]:
-                print("&&&&&&&&&&&")
-                print(preprocessing_diff_collection[i])
+                # print("&&&&&&&&&&&")
+                # print(preprocessing_diff_collection[i])
                 warning_desc_end = True
                 continue  # jump into another loop
 
@@ -141,7 +141,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                 # print(count_bracket(line))
                 manual_modified_brackets_num += count_bracket(line)
                 manual_modified_code_snippet_string += (line[1:] + "\n")
-                print("+++++++++++++++++++",manual_modified_brackets_num)
+                # print("+++++++++++++++++++",manual_modified_brackets_num)
                 if manual_modified_brackets_num == 0 and line[-1] != "\\":
                     manual_modified_version_snippets.append(manual_modified_code_snippet_string)
                     manual_modified_code_snippet_string = ""
@@ -189,7 +189,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
 # change here!!!!! for testing !!!!!!
 #dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('compact.dp.cpp', 'compact.cpp')
-dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('../oneAPI-DirectProgramming-training/multimaterial/dpcpp/compact.dp.cpp', '../oneAPI-DirectProgramming-training/multimaterial/dpct-version/compact.cpp')
+dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('../oneAPI-DirectProgramming-training/all-pairs-distance/dpcpp/main.dp.cpp', '../oneAPI-DirectProgramming-training/all-pairs-distance/dpct-version/main.cpp')
 print(dpct_snippets_result,manual_snippets_result,warning_message_version_snippets)
 
 
