@@ -40,8 +40,8 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         preprocessing_diff_collection.append(diff_item)
 
     # print the context of the differ
-    # for item in preprocessing_diff_collection:
-    #      print(item)
+    for item in preprocessing_diff_collection:
+        print(item)
 
     # define the flag will be used later
     warning_desc_start = False
@@ -106,18 +106,18 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
             #print("line:",line," i:",i)
             prefix = line[0]
             if prefix == "-" :
-                if warning_desc_end == False:
-                    warning_message += (line[1:] + "\n")
-                    w_massage_time = 0
+                #if warning_desc_end == False:
+                #    warning_message += (line[1:] + "\n")
+                #    w_massage_time = 0
 
 
                 # if the prefix is " "  == this line shown in dpct version
                 if warning_desc_end == True :
                     # warning message
-                    if w_massage_time == 0:
-                        warning_message_version_snippets.append(warning_message)
-                        warning_message = ""
-                        w_massage_time = 1
+                    #if w_massage_time == 0:
+                    #    warning_message_version_snippets.append(warning_message)
+                    #    warning_message = ""
+                    #    w_massage_time = 1
 
 
                     dpct_brackets_num += count_bracket(line)
@@ -189,7 +189,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
 # change here!!!!! for testing !!!!!!
 #dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('compact.dp.cpp', 'compact.cpp')
-dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('../oneAPI-DirectProgramming-training/all-pairs-distance/dpcpp/main.dp.cpp', '../oneAPI-DirectProgramming-training/all-pairs-distance/dpct-version/main.cpp')
+dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('../oneAPI-DirectProgramming-training/medianfilter/dpcpp/main.dp.cpp', '../oneAPI-DirectProgramming-training/medianfilter/dpct-version/main.cpp')
 print(dpct_snippets_result,manual_snippets_result,warning_message_version_snippets)
 
 
