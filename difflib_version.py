@@ -47,6 +47,10 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
     warning_desc_start = False
     warning_desc_end = False
 
+    # define flag for extraction complete
+    dpct_extraction_complete = False
+    manual_extraction_complete = False
+
     dpct_version_snippets = []
     manual_modified_version_snippets = []
     warning_message_version_snippets = []
@@ -79,6 +83,8 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         if "/*" in line and "DPCT" in preprocessing_diff_collection[i]:
             warning_desc_start = True
             before_mark = preprocessing_diff_collection[i-2]
+
+            manual_extraction_complete, dpct_extraction_complete = False, False
 
 
         # detect the warning description end
@@ -123,23 +129,28 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
                         # new added
                         after_mark = preprocessing_diff_collection[i]
-                        warning_desc_start = False
-                        warning_desc_end = False
+                        # warning_desc_start = False
+                        # warning_desc_end = False
                         if after_mark[0] != "+" and after_mark[0] != "\\":
                                 manual_modified_version_snippets.append("")
-                                warning_desc_end = False
+                                # warning_desc_end = False
+
+                                manual_extraction_complete = True
 
             if prefix == "+":
                 # print(count_bracket(line))
                 manual_modified_brackets_num += count_bracket(line)
                 manual_modified_code_snippet_string += (line[1:] + "\n")
-                print("+++++++++++++++++++",manual_modified_code_snippet_string,"manual_modified_brackets_num",manual_modified_brackets_num)
+                print("+++++++++++++++++++",manual_modified_brackets_num)
                 if manual_modified_brackets_num == 0 and line[-1] != "\\":
                     manual_modified_version_snippets.append(manual_modified_code_snippet_string)
                     manual_modified_code_snippet_string = ""
                     manual_modified_brackets_num = 0
-                    # warning_desc_start = False
-                    warning_desc_end = False
+
+                    # warning_desc_end = False
+
+                    # set extraction complete flag
+                    manual_extraction_complete = True
 
 
 
@@ -155,17 +166,24 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                     dpct_version_snippets.append(dpct_code_snippet_string)
                     dpct_code_snippet_string = ""
                     dpct_brackets_num = 0
-                    warning_desc_start = False
-                    warning_desc_end = False
+
+                    # warning_desc_start = False
+                    # warning_desc_end = False
+                    dpct_extraction_complete = True
 
                 if manual_modified_brackets_num == 0 and line[1:] != ' ':
                     manual_modified_version_snippets.append(manual_modified_code_snippet_string)
                     manual_modified_code_snippet_string = ""
                     manual_modified_brackets_num = 0
-                    warning_desc_start = False
-                    warning_desc_end = False
 
+                    # warning_desc_start = False
+                    # warning_desc_end = False
 
+                    manual_extraction_complete = True
+
+        if manual_extraction_complete == dpct_extraction_complete == True:
+            warning_desc_start = False
+            warning_desc_end = False
 
     return dpct_version_snippets,manual_modified_version_snippets,warning_message_version_snippets
 
