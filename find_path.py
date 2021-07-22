@@ -1,9 +1,11 @@
 import json
 import os
 import difflib_version
+import pandas as pd
 
 allFileNum = 0
 mapping_result = {}
+mapping_list = []
 non_matched_collection = {}  # this is the collection of the non matched snippets
 file_counter = 0
 test_dict = set()
@@ -24,7 +26,7 @@ def printPath(level, path, root_dir):
     '''
     # 所有文件夹，第一个字段是次目录的级别
     # get the root path for this function call
-    global file_counter, mapping_result, non_matched_collection, counter_1, counter_2
+    global file_counter, mapping_result, non_matched_collection, mapping_list
     dirList = []
     # 所有文件  
     fileList = []
@@ -64,6 +66,9 @@ def printPath(level, path, root_dir):
                         for i in range(len(dpct_snippets)):
                             mapping_result[a].append(
                                 {"dpct snippet": dpct_snippets[i], "manual snippets": manual_snippets[i]})
+                            mapping_list.append({'file name':a,"dpct snippet": dpct_snippets[i], "manual snippets": manual_snippets[i]})
+
+
                         # if a not in mapping_result.keys():
                         #     mapping_result[a] = [
                         #         {"dpct snippet": dpct_snippets[i], "manual snippets": manual_snippets[i]}]
@@ -74,7 +79,6 @@ def printPath(level, path, root_dir):
                             # mapping_result[a].append({"warning message":warning_messages[i],"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]})
                         # mapping_result[a] = ({"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]})
                     else:
-                        counter_2 += 1
                         non_matched_collection[a] = {"dpct snippet": dpct_snippets, "manual snippets": manual_snippets}
                         # if a not in non_matched_collection.keys():
                         #     non_matched_collection[a] = [{"dpct snippet":dpct_snippets,"manual snippets":manual_snippets}]
@@ -112,6 +116,8 @@ def iterate_all_projects():
         # print('../oneAPI-DirectProgramming-training/'+folder+'/dpcpp')
         print("\n\n\n\n\n")
 
+def store_in_csv(map_res: list):
+    pd.DataFrame(map_res).to_csv('mapping-result.csv')
 
 if __name__ == '__main__':
     # 修改‘’中的目录为需要索引的根目录
@@ -123,3 +129,6 @@ if __name__ == '__main__':
     with open('mapping-result.json','w') as f:
         json.dump(mapping_result, f, indent=4)
         print("mapping result output finish...")
+
+    store_in_csv(mapping_list)
+
