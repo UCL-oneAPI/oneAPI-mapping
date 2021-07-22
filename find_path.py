@@ -1,3 +1,4 @@
+import json
 import os
 import difflib_version
 
@@ -119,5 +120,6 @@ if __name__ == '__main__':
 
     # test iterate_all_projects()
     iterate_all_projects()
-    print(file_counter)
-    print("a")
+    with open('mapping-result.json','w') as f:
+        json.dump(mapping_result, f, indent=4)
+        print("mapping result output finish...")

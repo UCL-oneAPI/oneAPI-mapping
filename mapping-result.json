@@ -1,0 +1,1484 @@
+{
+    "../oneAPI-DirectProgramming-training/affine/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          affine(d_input_image, d_output_image, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             affine(d_input_image, d_output_image, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/all-pairs-distance/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     sycl::atomic<int>(sycl::global_ptr<int>(distance + INSTANCES * gx + gy))\n",
+            "manual snippets": "     sycl::atomic<int>(sycl::global_ptr<int>(distance + INSTANCES * gx + gy))\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(dimGrid * dimBlock, dimBlock),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          GPUregister(data_char_device, distance_device,\n                                      item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = dimGrid * dimBlock;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(dimBlock.get(2), dimBlock.get(1),\n                                            dimBlock.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             GPUregister(data_char_device, distance_device, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n \n       cgh.parallel_for(sycl::nd_range<3>(dimGrid * dimBlock, dimBlock),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          GPUshared(data_char_device, distance_device, item_ct1,\n                                    dist_acc_ct1.get_pointer());\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n \n       auto dpct_global_range = dimGrid * dimBlock;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(dimBlock.get(2), dimBlock.get(1),\n                                            dimBlock.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             GPUshared(data_char_device, distance_device, item_ct1,\n                       dist_acc_ct1.get_pointer());\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/amgmk/dpcpp/csr_matrix.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/amgmk/dpcpp/csr_matvec.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/amgmk/dpcpp/hypre_error.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/amgmk/dpcpp/hypre_memory.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/amgmk/dpcpp/laplace.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/amgmk/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "       q_ct1.submit([&](sycl::handler &cgh) {\n          cgh.parallel_for(\n              sycl::nd_range<3>(sycl::range<3>(grid1D) * sycl::range<3>(block1D),\n                                sycl::range<3>(block1D)),\n              [=](sycl::nd_item<3> item_ct1) {\n                 relax(d_A_diag_data, d_A_diag_i, d_A_diag_j, d_u_data, d_f_data,\n                       n, item_ct1);\n              });\n       });\n",
+            "manual snippets": "       q_ct1.submit([&](sycl::handler &cgh) {\n          auto dpct_global_range =\n              sycl::range<3>(grid1D) * sycl::range<3>(block1D);\n          auto dpct_local_range = sycl::range<3>(block1D);\n \n          cgh.parallel_for(\n              sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                               dpct_global_range.get(1),\n                                               dpct_global_range.get(0)),\n                                sycl::range<3>(dpct_local_range.get(2),\n                                               dpct_local_range.get(1),\n                                               dpct_local_range.get(0))),\n              [=](sycl::nd_item<3> item_ct1) {\n                 relax(d_A_diag_data, d_A_diag_i, d_A_diag_j, d_u_data, d_f_data,\n                       n, item_ct1);\n              });\n       });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/amgmk/dpcpp/vector.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/aobench/dpcpp/ao.dp.cpp": [
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/atomicIntrinsics/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "       q_ct1.submit([&](sycl::handler &cgh) {\n          cgh.parallel_for(\n              sycl::nd_range<3>(sycl::range<3>(1, 1, numBlocks) *\n                                    sycl::range<3>(1, 1, numThreads),\n                                sycl::range<3>(1, 1, numThreads)),\n              [=](sycl::nd_item<3> item_ct1) {\n                 testKernel(dOData, item_ct1);\n              });\n       });\n",
+            "manual snippets": "         q_ct1.submit([&](sycl::handler &cgh) {\n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(1, 1, numBlocks) *\n                                       sycl::range<3>(1, 1, numThreads),\n                                   sycl::range<3>(1, 1, numThreads)),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     testKernel(dOData, item_ct1);\n                 });\n         });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/axhelm/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/b+tree/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/b+tree/dpcpp/kernel/kernel.dp.cpp": [
+        {
+            "dpct snippet": "                 item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "                 item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/b+tree/dpcpp/kernel/kernel2.dp.cpp": [
+        {
+            "dpct snippet": "                 item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "                 item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "         item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/backprop/dpcpp/backprop.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/backprop/dpcpp/facetrain.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/backprop/dpcpp/imagenet.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/backprop/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     sycl::accessor<float, 1, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n     sycl::accessor<float, 1, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n \n     cgh.parallel_for(sycl::nd_range<3>(grid * threads, threads),\n                      [=](sycl::nd_item<3> item_ct1) {\n                        kernel_layerforward(d_input, d_input_weights,\n                                            d_hidden_partial_sum, hid, item_ct1,\n                                            input_node_acc_ct1.get_pointer(),\n                                            weight_matrix_acc_ct1.get_pointer());\n                      });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     sycl::accessor<float, 1, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n     sycl::accessor<float, 1, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n \n     auto dpct_global_range = grid * threads;\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           kernel_layerforward(d_input, d_input_weights, d_hidden_partial_sum,\n                               hid, item_ct1, input_node_acc_ct1.get_pointer(),\n                               weight_matrix_acc_ct1.get_pointer());\n         });\n   });\n"
+        },
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     cgh.parallel_for(sycl::nd_range<3>(grid * threads, threads),\n                      [=](sycl::nd_item<3> item_ct1) {\n                        kernel_adjust_weights(\n                            d_input, d_input_weights, d_hidden_delta,\n                            d_input_prev_weights, hid, item_ct1);\n                      });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     auto dpct_global_range = grid * threads;\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           kernel_adjust_weights(d_input, d_input_weights, d_hidden_delta,\n                                 d_input_prev_weights, hid, item_ct1);\n         });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/bezier-surface/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n         cgh.parallel_for(sycl::nd_range<3>(grid * block, block),\n                          [=](sycl::nd_item<3> item_ct1) {\n                              BezierGPU(d_in, d_out, in_size_i, in_size_j,\n                                        out_size_i, out_size_j, item_ct1);\n                          });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n         auto dpct_global_range = grid * block;\n \n         cgh.parallel_for(\n             sycl::nd_range<3>(\n                 sycl::range<3>(dpct_global_range.get(2),\n                                dpct_global_range.get(1),\n                                dpct_global_range.get(0)),\n                 sycl::range<3>(block.get(2), block.get(1), block.get(0))),\n             [=](sycl::nd_item<3> item_ct1) {\n                 BezierGPU(d_in, d_out, in_size_i, in_size_j, out_size_i,\n                           out_size_j, item_ct1);\n             });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/bfs/dpcpp/bfs.dp.cpp": [
+        {
+            "dpct snippet": "                 q_ct1.submit([&](sycl::handler &cgh) {\n                         cgh.parallel_for(\n                             sycl::nd_range<3>(grid * threads, threads),\n                             [=](sycl::nd_item<3> item_ct1) {\n                                     Kernel(d_graph_nodes, d_graph_edges,\n                                            d_graph_mask, d_updating_graph_mask,\n                                            d_graph_visited, d_cost, no_of_nodes,\n                                            item_ct1);\n                             });\n                 });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n    auto dpct_global_range = grid * threads;\n \n    cgh.parallel_for(\n        sycl::nd_range<3>(\n            sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                           dpct_global_range.get(0)),\n            sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n        [=](sycl::nd_item<3> item_ct1) {\n         Kernel(d_graph_nodes, d_graph_edges, d_graph_mask,\n                d_updating_graph_mask, d_graph_visited, d_cost, no_of_nodes,\n                item_ct1);\n        });\n   });\n"
+        },
+        {
+            "dpct snippet": "                 q_ct1.submit([&](sycl::handler &cgh) {\n                         cgh.parallel_for(\n                             sycl::nd_range<3>(grid * threads, threads),\n                             [=](sycl::nd_item<3> item_ct1) {\n                                     Kernel2(d_graph_mask, d_updating_graph_mask,\n                                             d_graph_visited, d_over,\n                                             no_of_nodes, item_ct1);\n                             });\n                 });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n    auto dpct_global_range = grid * threads;\n \n    cgh.parallel_for(\n        sycl::nd_range<3>(\n            sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                           dpct_global_range.get(0)),\n            sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n        [=](sycl::nd_item<3> item_ct1) {\n         Kernel2(d_graph_mask, d_updating_graph_mask, d_graph_visited, d_over,\n                 no_of_nodes, item_ct1);\n        });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/bfs/dpcpp/timer.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/bitonic-sort/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/boxfilter/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/bsearch/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/bspline-vgh/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(\n           sycl::nd_range<3>(global_size * local_size, local_size),\n           [=](sycl::nd_item<3> item_ct1) {\n             bspline(d_spline_coefs, xs, ys, zs, d_walkers_vals, d_walkers_grads,\n                     d_walkers_hess, d_a, d_b, d_c, d_da, d_db, d_dc, d_d2a,\n                     d_d2b, d_d2c, spline_x_grid_delta_inv,\n                     spline_y_grid_delta_inv, spline_z_grid_delta_inv,\n                     spline_num_splines, i, ix, iy, iz, item_ct1);\n           });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = global_size * local_size;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(local_size.get(2), local_size.get(1),\n                                            local_size.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             bspline(d_spline_coefs, xs, ys, zs, d_walkers_vals, d_walkers_grads,\n                     d_walkers_hess, d_a, d_b, d_c, d_da, d_db, d_dc, d_d2a,\n                     d_d2b, d_d2c, spline_x_grid_delta_inv,\n                     spline_y_grid_delta_inv, spline_z_grid_delta_inv,\n                     spline_num_splines, i, ix, iy, iz, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/ccsd-trpdrv/dpcpp/ccsd_tengy.dp.cpp": [
+        {
+            "dpct snippet": "     dpct::atomic_fetch_add(emp4i,\n",
+            "manual snippets": "         dpct::atomic_fetch_add(emp4i,\n"
+        },
+        {
+            "dpct snippet": "     dpct::atomic_fetch_add(emp4k,\n",
+            "manual snippets": "         dpct::atomic_fetch_add(emp4k,\n"
+        },
+        {
+            "dpct snippet": "     dpct::atomic_fetch_add(\n",
+            "manual snippets": "         dpct::atomic_fetch_add(\n"
+        },
+        {
+            "dpct snippet": "     dpct::atomic_fetch_add(\n",
+            "manual snippets": "         dpct::atomic_fetch_add(\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/ccsd-trpdrv/dpcpp/ccsd_trpdrv.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/ccsd-trpdrv/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "                     /*\n",
+            "manual snippets": "                     /*\n"
+        },
+        {
+            "dpct snippet": "                     /*\n",
+            "manual snippets": "                     /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/ced/dpcpp/kernel_reference.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/cfd/dpcpp/euler3d.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/chi2/dpcpp/chi2.dp.cpp": [
+        {
+            "dpct snippet": "         /*\n",
+            "manual snippets": "         /*\n"
+        },
+        {
+            "dpct snippet": "         /*\n",
+            "manual snippets": "         /*\n"
+        },
+        {
+            "dpct snippet": "         /*\n",
+            "manual snippets": "         /*\n"
+        },
+        {
+            "dpct snippet": "                 /*\n",
+            "manual snippets": "                 /*\n"
+        },
+        {
+            "dpct snippet": "         /*\n",
+            "manual snippets": "         /*\n"
+        },
+        {
+            "dpct snippet": "         /*\n",
+            "manual snippets": "         /*\n"
+        },
+        {
+            "dpct snippet": "                 /*\n",
+            "manual snippets": "                 /*\n"
+        },
+        {
+            "dpct snippet": "         /*\n",
+            "manual snippets": "         /*\n"
+        },
+        {
+            "dpct snippet": "         /*\n",
+            "manual snippets": "         /*\n"
+        },
+        {
+            "dpct snippet": "                 /*\n",
+            "manual snippets": "                 /*\n"
+        },
+        {
+            "dpct snippet": "         dpct::get_default_queue().submit([&](sycl::handler &cgh) {\n                 cgh.parallel_for(\n                     sycl::nd_range<3>(sycl::range<3>(1, 1, BLOCKS) *\n                                           sycl::range<3>(1, 1, THREADS),\n                                       sycl::range<3>(1, 1, THREADS)),\n                     [=](sycl::nd_item<3> item_ct1) {\n                             kernel(rows, cols, ncases, ncontrols, dev_dataT,\n                                    results, item_ct1);\n                     });\n         });\n",
+            "manual snippets": "         dpct::get_default_queue().submit([&](sycl::handler &cgh) {\n                 cgh.parallel_for(\n                     sycl::nd_range<3>(sycl::range<3>(1, 1, BLOCKS) *\n                                           sycl::range<3>(1, 1, THREADS),\n                                       sycl::range<3>(1, 1, THREADS)),\n                     [=](sycl::nd_item<3> item_ct1) {\n                             kernel(rows, cols, ncases, ncontrols, dev_dataT,\n                                    results, item_ct1);\n                     });\n         });\n"
+        },
+        {
+            "dpct snippet": "         /*\n",
+            "manual snippets": "         /*\n"
+        },
+        {
+            "dpct snippet": "         /*\n",
+            "manual snippets": "         /*\n"
+        },
+        {
+            "dpct snippet": "                 /*\n",
+            "manual snippets": "                 /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/clenergy/dpcpp/WKFUtils.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/clink/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/cobahh/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/compute-score/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<ulong, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           partial_acc_ct1(\n \n       cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, global_size) *\n                                              sycl::range<3>(1, 1, local_size),\n                                          sycl::range<3>(1, 1, local_size)),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          compute(d_docWordFrequencies_dimm1,\n                                  d_docWordFrequencies_dimm2,\n                                  d_profileWeights_dimm1, d_profileWeights_dimm2,\n                                  d_isWordInProfileHash, d_partialSums_dimm1,\n                                  d_partialSums_dimm2, item_ct1,\n                                  partial_acc_ct1.get_pointer());\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<ulong, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           partial_acc_ct1(\n \n       cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, global_size) *\n                                              sycl::range<3>(1, 1, local_size),\n                                          sycl::range<3>(1, 1, local_size)),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          compute(d_docWordFrequencies_dimm1,\n                                  d_docWordFrequencies_dimm2,\n                                  d_profileWeights_dimm1, d_profileWeights_dimm2,\n                                  d_isWordInProfileHash, d_partialSums_dimm1,\n                                  d_partialSums_dimm2, item_ct1,\n                                  partial_acc_ct1.get_pointer());\n                        });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(1, 1, global_size_reduction) *\n                                 sycl::range<3>(1, 1, local_size_reduction),\n                             sycl::range<3>(1, 1, local_size_reduction)),\n           [=](sycl::nd_item<3> item_ct1) {\n             reduction(d_docInfo, d_partialSums_dimm1, d_partialSums_dimm2,\n                       d_profileScore, item_ct1);\n           });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(1, 1, global_size_reduction) *\n                                 sycl::range<3>(1, 1, local_size_reduction),\n                             sycl::range<3>(1, 1, local_size_reduction)),\n           [=](sycl::nd_item<3> item_ct1) {\n             reduction(d_docInfo, d_partialSums_dimm1, d_partialSums_dimm2,\n                       d_profileScore, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/compute-score/dpcpp/options.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/crc64/dpcpp/CRC64.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/crc64/dpcpp/CRC64Test.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/d2q9-bgk/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n                              cgh);\n       sycl::accessor<float, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(grids * threads, threads),\n           [=](sycl::nd_item<3> item_ct1) {\n             d2q9_bgk(speeds0, speeds1, speeds2, speeds3, speeds4, speeds5,\n                      speeds6, speeds7, speeds8, tmp_speeds0, tmp_speeds1,\n                      tmp_speeds2, tmp_speeds3, tmp_speeds4, tmp_speeds5,\n                      tmp_speeds6, tmp_speeds7, tmp_speeds8, obstacles,\n                      partial_sum, partial_sum2, densityaccel, omega, Nx, Ny, tt,\n                      item_ct1, local_sum2_acc_ct1.get_pointer(),\n                      local_sum_acc_ct1.get_pointer());\n           });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n                              cgh);\n       sycl::accessor<float, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n \n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             d2q9_bgk(speeds0, speeds1, speeds2, speeds3, speeds4, speeds5,\n                      speeds6, speeds7, speeds8, tmp_speeds0, tmp_speeds1,\n                      tmp_speeds2, tmp_speeds3, tmp_speeds4, tmp_speeds5,\n                      tmp_speeds6, tmp_speeds7, tmp_speeds8, obstacles,\n                      partial_sum, partial_sum2, densityaccel, omega, Nx, Ny, tt,\n                      item_ct1, local_sum2_acc_ct1.get_pointer(),\n                      local_sum_acc_ct1.get_pointer());\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/divergence/dpcpp/divergence.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/dp/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/dp/dpcpp/shrUtils.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/dslash/dpcpp/dslash.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/dslash/dpcpp/kernels.dp.cpp": [
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/dslash/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/easyWave/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          kernel(d_node, d_R6, Imin, Jmin, Imax, Jmax, NLat,\n                                 Par.sshZeroThreshold, Par.sshArrivalThreshold,\n                                 Par.time, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             kernel(d_node, d_R6, Imin, Jmin, Imax, Jmax, NLat,\n                    Par.sshZeroThreshold, Par.sshArrivalThreshold, Par.time,\n                    item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          kernel3(d_node, d_R6, Imin, Jmin, Imax, Jmax, NLat,\n                                  item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             kernel3(d_node, d_R6, Imin, Jmin, Imax, Jmax, NLat, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/epistatis/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/extend2/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/extrema/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          relextrema_1D<T>(length, order, clip, d_x, d_result,\n                                           item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             relextrema_1D<T>(length, order, clip, d_x, d_result, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          relextrema_2D(length_x, length_y, order, clip, axis,\n                                        d_x, d_result, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             relextrema_2D(length_x, length_y, order, clip, axis, d_x, d_result,\n                           item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/fdtd3d/dpcpp/cmd_arg_reader.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/fdtd3d/dpcpp/FDTD3dReference.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/fdtd3d/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/fdtd3d/dpcpp/shrUtils.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/fft/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/filter/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     *l_n = sycl::atomic<int>(sycl::global_ptr<int>(nres)).fetch_add(*l_n);\n",
+            "manual snippets": "     *l_n = sycl::atomic<int>(sycl::global_ptr<int>(nres)).fetch_add(*l_n);\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     sycl::accessor<int, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         l_n_acc_ct1(cgh);\n \n     cgh.parallel_for(sycl::nd_range<3>(dimGrid * dimBlock, dimBlock),\n                      [=](sycl::nd_item<3> item_ct1) {\n                        filter(d_filtered_data, d_nres, d_data_to_filter,\n                               NUM_ELEMS, item_ct1, l_n_acc_ct1.get_pointer());\n                      });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     sycl::accessor<int, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         l_n_acc_ct1(cgh);\n \n     auto dpct_global_range = dimGrid * dimBlock;\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(dimBlock.get(2), dimBlock.get(1), dimBlock.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           filter(d_filtered_data, d_nres, d_data_to_filter, NUM_ELEMS, item_ct1,\n                  l_n_acc_ct1.get_pointer());\n         });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/floydwarshall/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "       q_ct1.submit([&](sycl::handler &cgh) {\n         cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                          [=](sycl::nd_item<3> item_ct1) {\n                            floydWarshallPass(pathDistanceBuffer, pathBuffer,\n                                              numNodes, i, item_ct1);\n                          });\n       });\n",
+            "manual snippets": "       q_ct1.submit([&](sycl::handler &cgh) {\n         auto dpct_global_range = grids * threads;\n \n         cgh.parallel_for(\n             sycl::nd_range<3>(\n                 sycl::range<3>(dpct_global_range.get(2),\n                                dpct_global_range.get(1),\n                                dpct_global_range.get(0)),\n                 sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n             [=](sycl::nd_item<3> item_ct1) {\n               floydWarshallPass(pathDistanceBuffer, pathBuffer, numNodes, i,\n                                 item_ct1);\n             });\n       });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/fpc/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     sycl::atomic<unsigned int>(sycl::global_ptr<unsigned int>(cmp_size))\n",
+            "manual snippets": "     sycl::atomic<unsigned int>(sycl::global_ptr<unsigned int>(cmp_size))\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     sycl::atomic<unsigned int>(sycl::global_ptr<unsigned int>(cmp_size))\n",
+            "manual snippets": "     sycl::atomic<unsigned int>(sycl::global_ptr<unsigned int>(cmp_size))\n"
+        },
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     sycl::accessor<unsigned, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         compressable_acc_ct1(cgh);\n \n     cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                      [=](sycl::nd_item<3> item_ct1) {\n                        fpc_kernel(d_values, d_cmp_size, item_ct1,\n                                   compressable_acc_ct1.get_pointer());\n                      });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     sycl::accessor<unsigned, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         compressable_acc_ct1(cgh);\n \n     auto dpct_global_range = grids * threads;\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           fpc_kernel(d_values, d_cmp_size, item_ct1,\n                      compressable_acc_ct1.get_pointer());\n         });\n   });\n"
+        },
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     sycl::accessor<unsigned, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         compressable_acc_ct1(cgh);\n \n     cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                      [=](sycl::nd_item<3> item_ct1) {\n                        fpc2_kernel(d_values, d_cmp_size, item_ct1,\n                                    compressable_acc_ct1.get_pointer());\n                      });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     sycl::accessor<unsigned, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         compressable_acc_ct1(cgh);\n \n     auto dpct_global_range = grids * threads;\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           fpc2_kernel(d_values, d_cmp_size, item_ct1,\n                       compressable_acc_ct1.get_pointer());\n         });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/gamma-correction/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/gaussian/dpcpp/gaussianElim.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(\n           sycl::nd_range<3>(gridDim_fan1 * blockDim_fan1, blockDim_fan1),\n           [=](sycl::nd_item<3> item_ct1) {\n             fan1(d_a, d_m, size, t, item_ct1);\n           });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = gridDim_fan1 * blockDim_fan1;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(blockDim_fan1.get(2), blockDim_fan1.get(1),\n                              blockDim_fan1.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             fan1(d_a, d_m, size, t, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(\n           sycl::nd_range<3>(gridDim_fan2 * blockDim_fan2, blockDim_fan2),\n           [=](sycl::nd_item<3> item_ct1) {\n             fan2(d_a, d_b, d_m, size, t, item_ct1);\n           });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = gridDim_fan2 * blockDim_fan2;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(blockDim_fan2.get(2), blockDim_fan2.get(1),\n                              blockDim_fan2.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             fan2(d_a, d_b, d_m, size, t, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/gaussian/dpcpp/utils.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/geodesic/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          kernel_distance(d_VA, d_VC, N, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             kernel_distance(d_VA, d_VC, N, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/haccmk/dpcpp/haccmk.dp.cpp": [
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n                 cgh.parallel_for(\n                     sycl::nd_range<3>(\n                         sycl::range<3>(1, 1,\n                                        (n1 + block_size - 1) / block_size) *\n                             sycl::range<3>(1, 1, block_size),\n                         sycl::range<3>(1, 1, block_size)),\n                     [=](sycl::nd_item<3> item_ct1) {\n                             haccmk_kernel(n1, n2, d_xx, d_yy, d_zz, d_mass,\n                                           d_vx2, d_vy2, d_vz2, fsrmax, mp_rsm,\n                                           fcoeff, item_ct1);\n                     });\n         });\n",
+            "manual snippets": "  q_ct1.submit([&](sycl::handler &cgh) {\n   cgh.parallel_for(\n       sycl::nd_range<3>(\n           sycl::range<3>(1, 1, (n1 + block_size - 1) / block_size) *\n               sycl::range<3>(1, 1, block_size),\n           sycl::range<3>(1, 1, block_size)),\n       [=](sycl::nd_item<3> item_ct1) {\n        haccmk_kernel(n1, n2, d_xx, d_yy, d_zz, d_mass, d_vx2, d_vy2, d_vz2,\n                      fsrmax, mp_rsm, fcoeff, item_ct1);\n       });\n  });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/heartwall/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/heartwall/dpcpp/kernel/kernel.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(\n           sycl::nd_range<3>(grids * threads, threads),\n           [=](sycl::nd_item<3> item_ct1) {\n             hw(frame_no, common, d_frame, d_endoRow, d_endoCol, d_tEndoRowLoc,\n                d_tEndoColLoc, d_epiRow, d_epiCol, d_tEpiRowLoc, d_tEpiColLoc,\n                d_endoT, d_epiT, d_in2, d_conv, d_in2_pad_cumv,\n                d_in2_pad_cumv_sel, d_in2_sub_cumh, d_in2_sub_cumh_sel,\n                d_in2_sub2, d_in2_sqr, d_in2_sqr_sub2, d_in_sqr, d_tMask,\n                d_mask_conv, d_in_mod_temp, d_in_partial_sum,\n                d_in_sqr_partial_sum, d_par_max_val, d_par_max_coo,\n                d_in_final_sum, d_in_sqr_final_sum, d_denomT, item_ct1);\n           });\n     });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n    auto dpct_global_range = grids * threads;\n \n    cgh.parallel_for(\n        sycl::nd_range<3>(\n            sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                           dpct_global_range.get(0)),\n            sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n        [=](sycl::nd_item<3> item_ct1) {\n         hw(frame_no, common, d_frame, d_endoRow, d_endoCol, d_tEndoRowLoc,\n            d_tEndoColLoc, d_epiRow, d_epiCol, d_tEpiRowLoc, d_tEpiColLoc,\n            d_endoT, d_epiT, d_in2, d_conv, d_in2_pad_cumv, d_in2_pad_cumv_sel,\n            d_in2_sub_cumh, d_in2_sub_cumh_sel, d_in2_sub2, d_in2_sqr,\n            d_in2_sqr_sub2, d_in_sqr, d_tMask, d_mask_conv, d_in_mod_temp,\n            d_in_partial_sum, d_in_sqr_partial_sum, d_par_max_val, d_par_max_coo,\n            d_in_final_sum, d_in_sqr_final_sum, d_denomT, \n #ifdef TEST_CHECKSUM\n \t   d_checksum, \n #endif\n \t   item_ct1);\n        });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/heat/dpcpp/heat.dp.cpp": [
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     cgh.parallel_for(\n         sycl::nd_range<3>(sycl::range<3>(grid) * sycl::range<3>(block),\n                           sycl::range<3>(block)),\n         [=](sycl::nd_item<3> item_ct1) {\n           initial_value(n, dx, length, u, item_ct1);\n         });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     auto dpct_global_range = sycl::range<3>(grid) * sycl::range<3>(block);\n     auto dpct_local_range = sycl::range<3>(block);\n \n     cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                                       dpct_global_range.get(1),\n                                                       dpct_global_range.get(0)),\n                                        sycl::range<3>(dpct_local_range.get(2),\n                                                       dpct_local_range.get(1),\n                                                       dpct_local_range.get(0))),\n                      [=](sycl::nd_item<3> item_ct1) {\n                        initial_value(n, dx, length, u, item_ct1);\n                      });\n   });\n"
+        },
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     cgh.parallel_for(\n         sycl::nd_range<3>(sycl::range<3>(grid) * sycl::range<3>(block),\n                           sycl::range<3>(block)),\n         [=](sycl::nd_item<3> item_ct1) {\n           zero(n, u_tmp, item_ct1);\n         });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     auto dpct_global_range = sycl::range<3>(grid) * sycl::range<3>(block);\n     auto dpct_local_range = sycl::range<3>(block);\n \n     cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                                       dpct_global_range.get(1),\n                                                       dpct_global_range.get(0)),\n                                        sycl::range<3>(dpct_local_range.get(2),\n                                                       dpct_local_range.get(1),\n                                                       dpct_local_range.get(0))),\n                      [=](sycl::nd_item<3> item_ct1) {\n                        zero(n, u_tmp, item_ct1);\n                      });\n   });\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(grid) * sycl::range<3>(block),\n                             sycl::range<3>(block)),\n           [=](sycl::nd_item<3> item_ct1) {\n             solve(n, alpha, dx, dt, r, r2, u, u_tmp, item_ct1);\n           });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = sycl::range<3>(grid) * sycl::range<3>(block);\n       auto dpct_local_range = sycl::range<3>(block);\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(dpct_local_range.get(2), dpct_local_range.get(1),\n                              dpct_local_range.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             solve(n, alpha, dx, dt, r, r2, u, u_tmp, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/heat2d/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto Lx_ct4 = Lx;\n       auto Ly_ct5 = Ly;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(blk * thr, thr), [=](sycl::nd_item<3> item_ct1) {\n             dev_lapl_iter(out, in, xdelta, xnorm, Lx_ct4, Ly_ct5, item_ct1);\n           });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = blk * thr;\n \n       auto Lx_ct4 = Lx;\n       auto Ly_ct5 = Ly;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(thr.get(2), thr.get(1), thr.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             dev_lapl_iter(out, in, xdelta, xnorm, Lx_ct4, Ly_ct5, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/histogram/dpcpp/histogram_compare.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/hmm/dpcpp/HiddenMarkovModel.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/hmm/dpcpp/ViterbiCPU.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/hotspot3D/dpcpp/3D.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(gridDim * blockDim, blockDim),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          hotspot3d(d_tIn, d_pIn, d_tOut, numCols, numRows,\n                                    layers, ce, cw, cn, cs, ct, cb, cc,\n                                    stepDivCap, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = gridDim * blockDim;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(blockDim.get(2), blockDim.get(1),\n                                            blockDim.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             hotspot3d(d_tIn, d_pIn, d_tOut, numCols, numRows, layers, ce, cw,\n                       cn, cs, ct, cb, cc, stepDivCap, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/hotspot3D/dpcpp/3D_helper.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/hybridsort/dpcpp/bucketsort.dp.cpp": [
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     sycl::accessor<unsigned int, 1, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(1, 1, global_histogram / local_histogram) *\n                 sycl::range<3>(1, 1, local_histogram),\n             sycl::range<3>(1, 1, local_histogram)),\n         [=](sycl::nd_item<3> item_ct1) {\n           histogram1024(d_offsets_buff, d_input_buff, listsize, minimum,\n                         maximum, item_ct1, s_Hist_acc_ct1.get_pointer());\n         });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     sycl::accessor<unsigned int, 1, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(1, 1, global_histogram / local_histogram) *\n                 sycl::range<3>(1, 1, local_histogram),\n             sycl::range<3>(1, 1, local_histogram)),\n         [=](sycl::nd_item<3> item_ct1) {\n           histogram1024(d_offsets_buff, d_input_buff, listsize, minimum,\n                         maximum, item_ct1, s_Hist_acc_ct1.get_pointer());\n         });\n   });\n"
+        },
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     cgh.parallel_for(\n         sycl::nd_range<3>(sycl::range<3>(1, 1, globalpre / localpre) *\n                               sycl::range<3>(1, 1, localpre),\n                           sycl::range<3>(1, 1, localpre)),\n         [=](sycl::nd_item<3> item_ct1) {\n           bucketprefix(d_prefixoffsets_buff, d_offsets_buff, blocks, item_ct1);\n         });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     cgh.parallel_for(\n         sycl::nd_range<3>(sycl::range<3>(1, 1, globalpre / localpre) *\n                               sycl::range<3>(1, 1, localpre),\n                           sycl::range<3>(1, 1, localpre)),\n         [=](sycl::nd_item<3> item_ct1) {\n           bucketprefix(d_prefixoffsets_buff, d_offsets_buff, blocks, item_ct1);\n         });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/hybridsort/dpcpp/hybridsort.dp.cpp": [
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/hybridsort/dpcpp/mergesort.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, grid[0]) *\n                                              sycl::range<3>(1, 1, local[0]),\n                                          sycl::range<3>(1, 1, local[0])),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          mergeSortPass(d_origList_buff, d_resultList_buff,\n                                        d_constStartAddr, threadsPerDiv, nrElems,\n                                        item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, grid[0]) *\n                                              sycl::range<3>(1, 1, local[0]),\n                                          sycl::range<3>(1, 1, local[0])),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          mergeSortPass(d_origList_buff, d_resultList_buff,\n                                        d_constStartAddr, threadsPerDiv, nrElems,\n                                        item_ct1);\n                        });\n     });\n"
+        },
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                      [=](sycl::nd_item<3> item_ct1) {\n                        mergepack((float *)d_origList_buff,\n                                  (float *)d_resultList_buff, d_constStartAddr,\n                                  d_finalStartAddr, d_nullElements, item_ct1);\n                      });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     auto dpct_global_range = grids * threads;\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           mergepack((float *)d_origList_buff, (float *)d_resultList_buff,\n                     d_constStartAddr, d_finalStartAddr, d_nullElements,\n                     item_ct1);\n         });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/interleave/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/iso2dfd/dpcpp/iso2dfd.dp.cpp": [
+        {
+            "dpct snippet": "       q_ct1.submit([&](sycl::handler &cgh) {\n         cgh.parallel_for(sycl::nd_range<3>(dimGrid * dimBlock, dimBlock),\n                          [=](sycl::nd_item<3> item_ct1) {\n                            iso_2dfd_kernel(d_next, d_prev, d_vel, dtDIVdxy,\n                                            nRows, nCols, item_ct1);\n                          });\n       });\n",
+            "manual snippets": "       q_ct1.submit([&](sycl::handler &cgh) {\n         auto dpct_global_range = dimGrid * dimBlock;\n \n         cgh.parallel_for(\n             sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                              dpct_global_range.get(1),\n                                              dpct_global_range.get(0)),\n                               sycl::range<3>(dimBlock.get(2), dimBlock.get(1),\n                                              dimBlock.get(0))),\n             [=](sycl::nd_item<3> item_ct1) {\n               iso_2dfd_kernel(d_next, d_prev, d_vel, dtDIVdxy, nRows, nCols,\n                               item_ct1);\n             });\n       });\n"
+        },
+        {
+            "dpct snippet": "       q_ct1.submit([&](sycl::handler &cgh) {\n         cgh.parallel_for(sycl::nd_range<3>(dimGrid * dimBlock, dimBlock),\n                          [=](sycl::nd_item<3> item_ct1) {\n                            iso_2dfd_kernel(d_prev, d_next, d_vel, dtDIVdxy,\n                                            nRows, nCols, item_ct1);\n                          });\n       });\n",
+            "manual snippets": "       q_ct1.submit([&](sycl::handler &cgh) {\n         auto dpct_global_range = dimGrid * dimBlock;\n \n         cgh.parallel_for(\n             sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                              dpct_global_range.get(1),\n                                              dpct_global_range.get(0)),\n                               sycl::range<3>(dimBlock.get(2), dimBlock.get(1),\n                                              dimBlock.get(0))),\n             [=](sycl::nd_item<3> item_ct1) {\n               iso_2dfd_kernel(d_prev, d_next, d_vel, dtDIVdxy, nRows, nCols,\n                               item_ct1);\n             });\n       });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/jaccard/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "           dpct::atomic_fetch_add(&weight_i[j], ref_val);\n",
+            "manual snippets": "           dpct::atomic_fetch_add(&weight_i[j], ref_val);\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(nblocks * nthreads, nthreads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          fill<weighted, T>(e, d_weight_j, (T)1.0, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = nblocks * nthreads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(nthreads.get(2), nthreads.get(1),\n                                            nthreads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             fill<weighted, T>(e, d_weight_j, (T)1.0, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(nblocks * nthreads, nthreads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          fill<false, T>(e, d_weight_i, (T)0.0, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = nblocks * nthreads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(nthreads.get(2), nthreads.get(1),\n                                            nthreads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             fill<false, T>(e, d_weight_i, (T)0.0, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(nblocks * nthreads, nthreads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          jaccard_row_sum<weighted, T>(n, d_csrPtr, d_csrInd,\n                                                       d_weight_j, d_work,\n                                                       item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = nblocks * nthreads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(nthreads.get(2), nthreads.get(1),\n                                            nthreads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             jaccard_row_sum<weighted, T>(n, d_csrPtr, d_csrInd, d_weight_j,\n                                          d_work, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(nblocks * nthreads, nthreads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          jaccard_is<weighted, T>(n, e, d_csrPtr, d_csrInd,\n                                                  d_weight_j, d_work, d_weight_i,\n                                                  d_weight_s, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = nblocks * nthreads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(nthreads.get(2), nthreads.get(1),\n                                            nthreads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             jaccard_is<weighted, T>(n, e, d_csrPtr, d_csrInd, d_weight_j,\n                                     d_work, d_weight_i, d_weight_s, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(nblocks * nthreads, nthreads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          jaccard_jw<weighted, T>(e, d_csrVal, gamma, d_weight_i,\n                                                  d_weight_s, d_weight_j,\n                                                  item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = nblocks * nthreads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(nthreads.get(2), nthreads.get(1),\n                                            nthreads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             jaccard_jw<weighted, T>(e, d_csrVal, gamma, d_weight_i, d_weight_s,\n                                     d_weight_j, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/jenkins-hash/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          kernel(d_lens, d_initvals, d_keys, d_out, N, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             kernel(d_lens, d_initvals, d_keys, d_out, N, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/keccaktreehash/dpcpp/KeccakF.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/keccaktreehash/dpcpp/KeccakTreeCPU.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/keccaktreehash/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/keccaktreehash/dpcpp/Test.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/kmeans/dpcpp/cluster.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          feature_transpose(d_feature_swap, d_feature, nfeatures,\n                                            npoints, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             feature_transpose(d_feature_swap, d_feature, nfeatures, npoints,\n                               item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n           cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                            [=](sycl::nd_item<3> item_ct1) {\n                              find_membership(d_feature_swap, d_clusters,\n                                              d_membership, nclusters, nfeatures,\n                                              npoints, item_ct1);\n                            });\n         });\n",
+            "manual snippets": "         q_ct1.submit([&](sycl::handler &cgh) {\n           auto dpct_global_range = grids * threads;\n \n           cgh.parallel_for(\n               sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                                dpct_global_range.get(1),\n                                                dpct_global_range.get(0)),\n                                 sycl::range<3>(threads.get(2), threads.get(1),\n                                                threads.get(0))),\n               [=](sycl::nd_item<3> item_ct1) {\n                 find_membership(d_feature_swap, d_clusters, d_membership,\n                                 nclusters, nfeatures, npoints, item_ct1);\n               });\n         });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/knn/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     sycl::range<2> shared_A_range_ct1(16 /*BLOCK_DIM*/, 16 /*BLOCK_DIM*/);\n \n     sycl::accessor<float, 2, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         shared_A_acc_ct1(shared_A_range_ct1, cgh);\n     sycl::accessor<float, 2, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         shared_B_acc_ct1(shared_B_range_ct1, cgh);\n     sycl::accessor<int, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         begin_A_acc_ct1(cgh);\n     sycl::accessor<int, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         begin_B_acc_ct1(cgh);\n     sycl::accessor<int, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         step_A_acc_ct1(cgh);\n     sycl::accessor<int, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         step_B_acc_ct1(cgh);\n     sycl::accessor<int, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         end_A_acc_ct1(cgh);\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(g_16x16 * t_16x16, t_16x16),\n         [=](sycl::nd_item<3> item_ct1) {\n           cuComputeDistanceGlobal(\n               ref_dev, ref_width, query_dev, query_width, height, dist_dev,\n               item_ct1,\n               dpct::accessor<float, dpct::local, 2>(shared_A_acc_ct1,\n                                                     shared_A_range_ct1),\n               dpct::accessor<float, dpct::local, 2>(shared_B_acc_ct1,\n                                                     shared_B_range_ct1),\n               begin_A_acc_ct1.get_pointer(), begin_B_acc_ct1.get_pointer(),\n               step_A_acc_ct1.get_pointer(), step_B_acc_ct1.get_pointer(),\n               end_A_acc_ct1.get_pointer());\n         });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     sycl::range<2> shared_A_range_ct1(16 /*BLOCK_DIM*/, 16 /*BLOCK_DIM*/);\n \n     sycl::accessor<float, 2, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         shared_A_acc_ct1(shared_A_range_ct1, cgh);\n     sycl::accessor<float, 2, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         shared_B_acc_ct1(shared_B_range_ct1, cgh);\n     sycl::accessor<int, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         begin_A_acc_ct1(cgh);\n     sycl::accessor<int, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         begin_B_acc_ct1(cgh);\n     sycl::accessor<int, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         step_A_acc_ct1(cgh);\n     sycl::accessor<int, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         step_B_acc_ct1(cgh);\n     sycl::accessor<int, 0, sycl::access::mode::read_write,\n                    sycl::access::target::local>\n         end_A_acc_ct1(cgh);\n \n     auto dpct_global_range = g_16x16 * t_16x16;\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(t_16x16.get(2), t_16x16.get(1), t_16x16.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           cuComputeDistanceGlobal(\n               ref_dev, ref_width, query_dev, query_width, height, dist_dev,\n               item_ct1,\n               dpct::accessor<float, dpct::local, 2>(shared_A_acc_ct1,\n                                                     shared_A_range_ct1),\n               dpct::accessor<float, dpct::local, 2>(shared_B_acc_ct1,\n                                                     shared_B_range_ct1),\n               begin_A_acc_ct1.get_pointer(), begin_B_acc_ct1.get_pointer(),\n               step_A_acc_ct1.get_pointer(), step_B_acc_ct1.get_pointer(),\n               end_A_acc_ct1.get_pointer());\n         });\n   });\n"
+        },
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     cgh.parallel_for(sycl::nd_range<3>(g_256x1 * t_256x1, t_256x1),\n                      [=](sycl::nd_item<3> item_ct1) {\n                        cuInsertionSort(dist_dev, ind_dev, query_width,\n                                        ref_width, k, item_ct1);\n                      });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     auto dpct_global_range = g_256x1 * t_256x1;\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(t_256x1.get(2), t_256x1.get(1), t_256x1.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           cuInsertionSort(dist_dev, ind_dev, query_width, ref_width, k,\n                           item_ct1);\n         });\n   });\n"
+        },
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     cgh.parallel_for(sycl::nd_range<3>(g_k_16x16 * t_k_16x16, t_k_16x16),\n                      [=](sycl::nd_item<3> item_ct1) {\n                        cuParallelSqrt(dist_dev, query_width, k, item_ct1);\n                      });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     auto dpct_global_range = g_k_16x16 * t_k_16x16;\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                          dpct_global_range.get(1),\n                                          dpct_global_range.get(0)),\n                           sycl::range<3>(t_k_16x16.get(2), t_k_16x16.get(1),\n                                          t_k_16x16.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           cuParallelSqrt(dist_dev, query_width, k, item_ct1);\n         });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/lanczos/dpcpp/lanczos.dp.cpp": [
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "         item_ct1.barrier();\n",
+            "manual snippets": "         item_ct1.barrier();\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/lanczos/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/langford/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/laplace/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(dimGrid * dimBlock, dimBlock),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          red_kernel(aP_d, aW_d, aE_d, aS_d, aN_d, b_d,\n                                     temp_black_d, temp_red_d, bl_norm_L2_d,\n                                     item_ct1);\n                        });\n     });\n",
+            "manual snippets": "         q_ct1.submit([&](sycl::handler &cgh) {\n             auto dpct_global_range = dimGrid * dimBlock;\n \n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                                  dpct_global_range.get(1),\n                                                  dpct_global_range.get(0)),\n                                   sycl::range<3>(dimBlock.get(2),\n                                                  dimBlock.get(1),\n                                                  dimBlock.get(0))),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     red_kernel(aP_d, aW_d, aE_d, aS_d, aN_d, b_d, temp_black_d,\n                                temp_red_d, bl_norm_L2_d, item_ct1);\n                 });\n         });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(dimGrid * dimBlock, dimBlock),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          black_kernel(aP_d, aW_d, aE_d, aS_d, aN_d, b_d,\n                                       temp_red_d, temp_black_d, bl_norm_L2_d,\n                                       item_ct1);\n                        });\n     });\n",
+            "manual snippets": "         q_ct1.submit([&](sycl::handler &cgh) {\n             auto dpct_global_range = dimGrid * dimBlock;\n \n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                                  dpct_global_range.get(1),\n                                                  dpct_global_range.get(0)),\n                                   sycl::range<3>(dimBlock.get(2),\n                                                  dimBlock.get(1),\n                                                  dimBlock.get(0))),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     black_kernel(aP_d, aW_d, aE_d, aS_d, aN_d, b_d, temp_red_d,\n                                  temp_black_d, bl_norm_L2_d, item_ct1);\n                 });\n         });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/lavaMD/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/lavaMD/dpcpp/util/num/num.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/lavaMD/dpcpp/util/timer/timer.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/libor/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/lid-driven-cavity/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grid_F * block_F, block_F),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          calculate_F(dt, u_d, v_d, F_d, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grid_F * block_F;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(block_F.get(2), block_F.get(1), block_F.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             calculate_F(dt, u_d, v_d, F_d, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grid_G * block_G, block_G),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          calculate_G(dt, u_d, v_d, G_d, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grid_G * block_G;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(block_G.get(2), block_G.get(1), block_G.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             calculate_G(dt, u_d, v_d, G_d, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<Real, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n \n       cgh.parallel_for(sycl::nd_range<3>(grid_pr * block_pr, block_pr),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          sum_pressure(pres_red_d, pres_black_d, pres_sum_d,\n                                       item_ct1,\n                                       sum_cache_acc_ct1.get_pointer());\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<Real, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n \n       auto dpct_global_range = grid_pr * block_pr;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(block_pr.get(2), block_pr.get(1),\n                                            block_pr.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             sum_pressure(pres_red_d, pres_black_d, pres_sum_d, item_ct1,\n                          sum_cache_acc_ct1.get_pointer());\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "       q_ct1.submit([&](sycl::handler &cgh) {\n         cgh.parallel_for(sycl::nd_range<3>(grid_hpbc * block_hpbc, block_hpbc),\n                          [=](sycl::nd_item<3> item_ct1) {\n                            set_horz_pres_BCs(pres_red_d, pres_black_d,\n                                              item_ct1);\n                          });\n       });\n",
+            "manual snippets": "       q_ct1.submit([&](sycl::handler &cgh) {\n         auto dpct_global_range = grid_hpbc * block_hpbc;\n \n         cgh.parallel_for(\n             sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                              dpct_global_range.get(1),\n                                              dpct_global_range.get(0)),\n                               sycl::range<3>(block_hpbc.get(2),\n                                              block_hpbc.get(1),\n                                              block_hpbc.get(0))),\n             [=](sycl::nd_item<3> item_ct1) {\n               set_horz_pres_BCs(pres_red_d, pres_black_d, item_ct1);\n             });\n       });\n"
+        },
+        {
+            "dpct snippet": "       q_ct1.submit([&](sycl::handler &cgh) {\n         cgh.parallel_for(sycl::nd_range<3>(grid_vpbc * block_hpbc, block_hpbc),\n                          [=](sycl::nd_item<3> item_ct1) {\n                            set_vert_pres_BCs(pres_red_d, pres_black_d,\n                                              item_ct1);\n                          });\n       });\n",
+            "manual snippets": "       q_ct1.submit([&](sycl::handler &cgh) {\n         auto dpct_global_range = grid_vpbc * block_hpbc;\n \n         cgh.parallel_for(\n             sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                              dpct_global_range.get(1),\n                                              dpct_global_range.get(0)),\n                               sycl::range<3>(block_hpbc.get(2),\n                                              block_hpbc.get(1),\n                                              block_hpbc.get(0))),\n             [=](sycl::nd_item<3> item_ct1) {\n               set_vert_pres_BCs(pres_red_d, pres_black_d, item_ct1);\n             });\n       });\n"
+        },
+        {
+            "dpct snippet": "       q_ct1.submit([&](sycl::handler &cgh) {\n         cgh.parallel_for(sycl::nd_range<3>(grid_pr * block_pr, block_pr),\n                          [=](sycl::nd_item<3> item_ct1) {\n                            red_kernel(dt, F_d, G_d, pres_black_d, pres_red_d,\n                                       item_ct1);\n                          });\n       });\n",
+            "manual snippets": "       q_ct1.submit([&](sycl::handler &cgh) {\n         auto dpct_global_range = grid_pr * block_pr;\n \n         cgh.parallel_for(\n             sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                              dpct_global_range.get(1),\n                                              dpct_global_range.get(0)),\n                               sycl::range<3>(block_pr.get(2), block_pr.get(1),\n                                              block_pr.get(0))),\n             [=](sycl::nd_item<3> item_ct1) {\n               red_kernel(dt, F_d, G_d, pres_black_d, pres_red_d, item_ct1);\n             });\n       });\n"
+        },
+        {
+            "dpct snippet": "       q_ct1.submit([&](sycl::handler &cgh) {\n         cgh.parallel_for(sycl::nd_range<3>(grid_pr * block_pr, block_pr),\n                          [=](sycl::nd_item<3> item_ct1) {\n                            black_kernel(dt, F_d, G_d, pres_red_d, pres_black_d,\n                                         item_ct1);\n                          });\n       });\n",
+            "manual snippets": "       q_ct1.submit([&](sycl::handler &cgh) {\n         auto dpct_global_range = grid_pr * block_pr;\n \n         cgh.parallel_for(\n             sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                              dpct_global_range.get(1),\n                                              dpct_global_range.get(0)),\n                               sycl::range<3>(block_pr.get(2), block_pr.get(1),\n                                              block_pr.get(0))),\n             [=](sycl::nd_item<3> item_ct1) {\n               black_kernel(dt, F_d, G_d, pres_red_d, pres_black_d, item_ct1);\n             });\n       });\n"
+        },
+        {
+            "dpct snippet": "       q_ct1.submit([&](sycl::handler &cgh) {\n         sycl::accessor<Real, 1, sycl::access::mode::read_write,\n                        sycl::access::target::local>\n \n         cgh.parallel_for(sycl::nd_range<3>(grid_pr * block_pr, block_pr),\n                          [=](sycl::nd_item<3> item_ct1) {\n                            calc_residual(dt, F_d, G_d, pres_red_d, pres_black_d,\n                                          res_d, item_ct1,\n                                          sum_cache_acc_ct1.get_pointer());\n                          });\n       });\n",
+            "manual snippets": "       q_ct1.submit([&](sycl::handler &cgh) {\n         sycl::accessor<Real, 1, sycl::access::mode::read_write,\n                        sycl::access::target::local>\n \n         auto dpct_global_range = grid_pr * block_pr;\n \n         cgh.parallel_for(\n             sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                              dpct_global_range.get(1),\n                                              dpct_global_range.get(0)),\n                               sycl::range<3>(block_pr.get(2), block_pr.get(1),\n                                              block_pr.get(0))),\n             [=](sycl::nd_item<3> item_ct1) {\n               calc_residual(dt, F_d, G_d, pres_red_d, pres_black_d, res_d,\n                             item_ct1, sum_cache_acc_ct1.get_pointer());\n             });\n       });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<Real, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n \n       cgh.parallel_for(sycl::nd_range<3>(grid_pr * block_pr, block_pr),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          calculate_u(dt, F_d, pres_red_d, pres_black_d, u_d,\n                                      max_u_d, item_ct1,\n                                      max_cache_acc_ct1.get_pointer());\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<Real, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n \n       auto dpct_global_range = grid_pr * block_pr;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(block_pr.get(2), block_pr.get(1),\n                                            block_pr.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             calculate_u(dt, F_d, pres_red_d, pres_black_d, u_d, max_u_d,\n                         item_ct1, max_cache_acc_ct1.get_pointer());\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<Real, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n \n       cgh.parallel_for(sycl::nd_range<3>(grid_pr * block_pr, block_pr),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          calculate_v(dt, G_d, pres_red_d, pres_black_d, v_d,\n                                      max_v_d, item_ct1,\n                                      max_cache_acc_ct1.get_pointer());\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<Real, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n \n       auto dpct_global_range = grid_pr * block_pr;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(block_pr.get(2), block_pr.get(1),\n                                            block_pr.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             calculate_v(dt, G_d, pres_red_d, pres_black_d, v_d, max_v_d,\n                         item_ct1, max_cache_acc_ct1.get_pointer());\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grid_bcs * block_bcs, block_bcs),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          set_BCs(u_d, v_d, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grid_bcs * block_bcs;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(block_bcs.get(2), block_bcs.get(1),\n                                            block_bcs.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             set_BCs(u_d, v_d, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/lombscargle/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "       /*\n",
+            "manual snippets": "       /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          lombscargle(x_shape, freqs_shape, d_x, d_y, d_f, d_p,\n                                      y_dot, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             lombscargle(x_shape, freqs_shape, d_x, d_y, d_f, d_p, y_dot,\n                         item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/lud/dpcpp/lud.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/lud/dpcpp/lud_kernels.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "         item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "         item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/lud/dpcpp/common/common.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/mandelbrot/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/matrix-mul/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/matrix-rotate/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/maxpool3d/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/md/dpcpp/MD.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n         auto maxNeighbors_ct4 = maxNeighbors;\n \n         cgh.parallel_for(\n             sycl::nd_range<3>(\n                 sycl::range<3>(1, 1, (globalSize + localSize - 1) / localSize) *\n                     sycl::range<3>(1, 1, localSize),\n                 sycl::range<3>(1, 1, localSize)),\n             [=](sycl::nd_item<3> item_ct1) {\n                 md(d_position, d_force, d_neighborList, nAtom, maxNeighbors_ct4,\n                    lj1_t, lj2_t, cutsq_t, item_ct1);\n             });\n     });\n",
+            "manual snippets": "           q_ct1.submit([&](sycl::handler &cgh) {\n                     auto maxNeighbors_ct4 = maxNeighbors;\n \n                     cgh.parallel_for(\n                         sycl::nd_range<3>(\n                             sycl::range<3>(1, 1,\n                                            (globalSize + localSize - 1) /\n                                                localSize) *\n                                 sycl::range<3>(1, 1, localSize),\n                             sycl::range<3>(1, 1, localSize)),\n                         [=](sycl::nd_item<3> item_ct1) {\n                                   md(d_position, d_force, d_neighborList, nAtom,\n                                      maxNeighbors_ct4, lj1_t, lj2_t, cutsq_t,\n                                      item_ct1);\n                         });\n           });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n             auto maxNeighbors_ct4 = maxNeighbors;\n \n             cgh.parallel_for(\n                 sycl::nd_range<3>(\n                     sycl::range<3>(1, 1,\n                                    (globalSize + localSize - 1) / localSize) *\n                         sycl::range<3>(1, 1, localSize),\n                     sycl::range<3>(1, 1, localSize)),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     md(d_position, d_force, d_neighborList, nAtom,\n                        maxNeighbors_ct4, lj1_t, lj2_t, cutsq_t, item_ct1);\n                 });\n         });\n",
+            "manual snippets": "                     q_ct1.submit([&](sycl::handler &cgh) {\n                               auto maxNeighbors_ct4 = maxNeighbors;\n \n                               cgh.parallel_for(\n                                   sycl::nd_range<3>(\n                                       sycl::range<3>(\n                                           1, 1,\n                                           (globalSize + localSize - 1) /\n                                               localSize) *\n                                           sycl::range<3>(1, 1, localSize),\n                                       sycl::range<3>(1, 1, localSize)),\n                                   [=](sycl::nd_item<3> item_ct1) {\n                                             md(d_position, d_force,\n                                                d_neighborList, nAtom,\n                                                maxNeighbors_ct4, lj1_t, lj2_t,\n                                                cutsq_t, item_ct1);\n                                   });\n                     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/md5hash/dpcpp/MD5Hash.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n         cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, nblocks) *\n                                                sycl::range<3>(1, 1, nthreads),\n                                            sycl::range<3>(1, 1, nthreads)),\n                          [=](sycl::nd_item<3> item_ct1) {\n                              md5hash_kernel(d_foundIndex, d_foundKey,\n                                             d_foundDigest, keyspace, byteLength,\n                                             valsPerByte, searchDigest0,\n                                             searchDigest1, searchDigest2,\n                                             searchDigest3, item_ct1);\n                          });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n         cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, nblocks) *\n                                                sycl::range<3>(1, 1, nthreads),\n                                            sycl::range<3>(1, 1, nthreads)),\n                          [=](sycl::nd_item<3> item_ct1) {\n                              md5hash_kernel(d_foundIndex, d_foundKey,\n                                             d_foundDigest, keyspace, byteLength,\n                                             valsPerByte, searchDigest0,\n                                             searchDigest1, searchDigest2,\n                                             searchDigest3, item_ct1);\n                          });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/medianfilter/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/medianfilter/dpcpp/MedianFilter.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/medianfilter/dpcpp/MedianFilterHost.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/medianfilter/dpcpp/shrUtils.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/memcpy/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "       /*\n",
+            "manual snippets": "       /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/mixbench/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/mkl-sgemm/dpcpp/gemm.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/mt/dpcpp/genmtrand.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/mt/dpcpp/MT.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(\n           sycl::nd_range<3>(gridBlocks * threadBlocks, threadBlocks),\n           [=](sycl::nd_item<3> item_ct1) {\n             mt(d_MT, d_Rand, nPerRng, item_ct1);\n           });\n     });\n",
+            "manual snippets": "         q_ct1.submit([&](sycl::handler &cgh) {\n             auto dpct_global_range = gridBlocks * threadBlocks;\n \n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                                  dpct_global_range.get(1),\n                                                  dpct_global_range.get(0)),\n                                   sycl::range<3>(threadBlocks.get(2),\n                                                  threadBlocks.get(1),\n                                                  threadBlocks.get(0))),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     mt(d_MT, d_Rand, nPerRng, item_ct1);\n                 });\n         });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(\n           sycl::nd_range<3>(gridBlocks * threadBlocks, threadBlocks),\n           [=](sycl::nd_item<3> item_ct1) {\n             boxmuller(d_Rand, nPerRng, item_ct1);\n           });\n     });\n",
+            "manual snippets": "         q_ct1.submit([&](sycl::handler &cgh) {\n             auto dpct_global_range = gridBlocks * threadBlocks;\n \n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                                  dpct_global_range.get(1),\n                                                  dpct_global_range.get(0)),\n                                   sycl::range<3>(threadBlocks.get(2),\n                                                  threadBlocks.get(1),\n                                                  threadBlocks.get(0))),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     boxmuller(d_Rand, nPerRng, item_ct1);\n                 });\n         });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/mt/dpcpp/MT_gold.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/multimaterial/dpcpp/compact.dp.cpp": [
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n                 cgh.parallel_for(\n                     sycl::nd_range<3>(sycl::range<3>(blocks) *\n                                           sycl::range<3>(threads),\n                                       sycl::range<3>(threads)),\n                     [=](sycl::nd_item<3> item_ct1) {\n                             ccc_loop1(d_imaterial, d_nextfrac, d_rho_compact,\n                                       d_rho_compact_list, d_Vf_compact_list,\n                                       d_V, d_rho_ave_compact, sizex, sizey,\n                                       d_mmc_index, item_ct1);\n                     });\n         });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     auto dpct_global_range = sycl::range<3>(blocks) * sycl::range<3>(threads);\n     auto dpct_local_range = sycl::range<3>(threads);\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(dpct_local_range.get(2), dpct_local_range.get(1),\n                            dpct_local_range.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           ccc_loop1(d_imaterial, d_nextfrac, d_rho_compact, d_rho_compact_list,\n                     d_Vf_compact_list, d_V, d_rho_ave_compact, sizex, sizey,\n                     d_mmc_index, item_ct1);\n         });\n   });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n                 cgh.parallel_for(\n                     sycl::nd_range<3>(\n                         sycl::range<3>(1, 1,\n                                        (mmc_cells - 1) / (thx * thy) + 1) *\n                             sycl::range<3>(1, 1, (thx * thy)),\n                         sycl::range<3>(1, 1, (thx * thy))),\n                     [=](sycl::nd_item<3> item_ct1) {\n                             ccc_loop1_2(d_rho_compact_list, d_Vf_compact_list,\n                                         d_V, d_rho_ave_compact, d_mmc_index,\n                                         mmc_cells, d_mmc_i, d_mmc_j, sizex,\n                                         sizey, item_ct1);\n                     });\n         });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(1, 1, (mmc_cells - 1) / (thx * thy) + 1) *\n                 sycl::range<3>(1, 1, (thx * thy)),\n             sycl::range<3>(1, 1, (thx * thy))),\n         [=](sycl::nd_item<3> item_ct1) {\n           ccc_loop1_2(d_rho_compact_list, d_Vf_compact_list, d_V,\n                       d_rho_ave_compact, d_mmc_index, mmc_cells, d_mmc_i,\n                       d_mmc_j, sizex, sizey, item_ct1);\n         });\n   });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n                 cgh.parallel_for(\n                     sycl::nd_range<3>(sycl::range<3>(blocks) *\n                                           sycl::range<3>(threads),\n                                       sycl::range<3>(threads)),\n                     [=](sycl::nd_item<3> item_ct1) {\n                             ccc_loop2(d_imaterial, d_matids, d_nextfrac,\n                                       d_rho_compact, d_rho_compact_list,\n                                       d_t_compact, d_t_compact_list,\n                                       d_Vf_compact_list, d_n, d_p_compact,\n                                       d_p_compact_list, sizex, sizey,\n                                       d_mmc_index, item_ct1);\n                     });\n         });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     auto dpct_global_range = sycl::range<3>(blocks) * sycl::range<3>(threads);\n     auto dpct_local_range = sycl::range<3>(threads);\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(dpct_local_range.get(2), dpct_local_range.get(1),\n                            dpct_local_range.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           ccc_loop2(d_imaterial, d_matids, d_nextfrac, d_rho_compact,\n                     d_rho_compact_list, d_t_compact, d_t_compact_list,\n                     d_Vf_compact_list, d_n, d_p_compact, d_p_compact_list,\n                     sizex, sizey, d_mmc_index, item_ct1);\n         });\n   });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n                 cgh.parallel_for(\n                     sycl::nd_range<3>(\n                         sycl::range<3>(1, 1, (mm_len - 1) / (thx * thy) + 1) *\n                             sycl::range<3>(1, 1, (thx * thy)),\n                         sycl::range<3>(1, 1, (thx * thy))),\n                     [=](sycl::nd_item<3> item_ct1) {\n                             ccc_loop2_2(d_matids, d_rho_compact_list,\n                                         d_t_compact_list, d_Vf_compact_list,\n                                         d_n, d_p_compact_list, d_mmc_index,\n                                         mm_len, item_ct1);\n                     });\n         });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     cgh.parallel_for(\n         sycl::nd_range<3>(sycl::range<3>(1, 1, (mm_len - 1) / (thx * thy) + 1) *\n                               sycl::range<3>(1, 1, (thx * thy)),\n                           sycl::range<3>(1, 1, (thx * thy))),\n         [=](sycl::nd_item<3> item_ct1) {\n           ccc_loop2_2(d_matids, d_rho_compact_list, d_t_compact_list,\n                       d_Vf_compact_list, d_n, d_p_compact_list, d_mmc_index,\n                       mm_len, item_ct1);\n         });\n   });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n                 cgh.parallel_for(\n                     sycl::nd_range<3>(sycl::range<3>(blocks) *\n                                           sycl::range<3>(threads),\n                                       sycl::range<3>(threads)),\n                     [=](sycl::nd_item<3> item_ct1) {\n                             ccc_loop3(d_imaterial, d_nextfrac, d_matids,\n                                       d_rho_compact, d_rho_compact_list,\n                                       d_rho_mat_ave_compact,\n                                       d_rho_mat_ave_compact_list, d_x, d_y,\n                                       sizex, sizey, d_mmc_index, item_ct1);\n                     });\n         });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     auto dpct_global_range = sycl::range<3>(blocks) * sycl::range<3>(threads);\n     auto dpct_local_range = sycl::range<3>(threads);\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(dpct_local_range.get(2), dpct_local_range.get(1),\n                            dpct_local_range.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           ccc_loop3(d_imaterial, d_nextfrac, d_matids, d_rho_compact,\n                     d_rho_compact_list, d_rho_mat_ave_compact,\n                     d_rho_mat_ave_compact_list, d_x, d_y, sizex, sizey,\n                     d_mmc_index, item_ct1);\n         });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/multimaterial/dpcpp/full_matrix.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/multimaterial/dpcpp/multimat.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/murmurhash3/dpcpp/murmurhash3.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(gridDim * blockDim, blockDim),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          MurmurHash3_x64_128_kernel(dev_keys, dev_length,\n                                                     key_length, dev_out,\n                                                     numKeys, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     auto dpct_global_range = gridDim * blockDim;\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(blockDim.get(2), blockDim.get(1), blockDim.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           MurmurHash3_x64_128_kernel(dev_keys, dev_length, key_length, dev_out,\n                                      numKeys, item_ct1);\n         });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/nbody/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/nms/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   *pointsbitmap =\n",
+            "manual snippets": "   *pointsbitmap =\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/nn/dpcpp/nearestNeighbor.dp.cpp": [
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     cgh.parallel_for(sycl::nd_range<3>(gridDim * blockDim, blockDim),\n                      [=](sycl::nd_item<3> item_ct1) {\n                        nn(numRecords, lat, lng, d_locations, d_distances,\n                           item_ct1);\n                      });\n   });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n     auto dpct_global_range = gridDim * blockDim;\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(blockDim.get(2), blockDim.get(1), blockDim.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n           nn(numRecords, lat, lng, d_locations, d_distances, item_ct1);\n         });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/nn/dpcpp/utils.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/nw/dpcpp/nw.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "      item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "      item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "    item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "    item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "    item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "       item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "       item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier(sycl::access::fence_space::local_space);\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           input_itemsets_l_acc_ct1(\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n                               cgh);\n \n       cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, global_work) *\n                                              sycl::range<3>(1, 1, local_work),\n                                          sycl::range<3>(1, 1, local_work)),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          kernel1(d_input_itemsets, d_reference, offset_r,\n                                  offset_c, max_cols, blk, penalty, item_ct1,\n                                  input_itemsets_l_acc_ct1.get_pointer(),\n                                  reference_l_acc_ct1.get_pointer());\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           input_itemsets_l_acc_ct1(\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n                               cgh);\n \n       cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, global_work) *\n                                              sycl::range<3>(1, 1, local_work),\n                                          sycl::range<3>(1, 1, local_work)),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          kernel1(d_input_itemsets, d_reference, offset_r,\n                                  offset_c, max_cols, blk, penalty, item_ct1,\n                                  input_itemsets_l_acc_ct1.get_pointer(),\n                                  reference_l_acc_ct1.get_pointer());\n                        });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           input_itemsets_l_acc_ct1(\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n                               cgh);\n \n       cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, global_work) *\n                                              sycl::range<3>(1, 1, local_work),\n                                          sycl::range<3>(1, 1, local_work)),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          kernel2(d_input_itemsets, d_reference, block_width,\n                                  offset_r, offset_c, max_cols, blk, penalty,\n                                  item_ct1,\n                                  input_itemsets_l_acc_ct1.get_pointer(),\n                                  reference_l_acc_ct1.get_pointer());\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           input_itemsets_l_acc_ct1(\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n                               cgh);\n \n       cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, global_work) *\n                                              sycl::range<3>(1, 1, local_work),\n                                          sycl::range<3>(1, 1, local_work)),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          kernel2(d_input_itemsets, d_reference, block_width,\n                                  offset_r, offset_c, max_cols, blk, penalty,\n                                  item_ct1,\n                                  input_itemsets_l_acc_ct1.get_pointer(),\n                                  reference_l_acc_ct1.get_pointer());\n                        });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/page-rank/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, num_blocks) *\n                                              sycl::range<3>(1, 1, block_size),\n                                          sycl::range<3>(1, 1, block_size)),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          map(d_pages, d_page_ranks, d_maps, d_noutlinks, n,\n                              item_ct1);\n                        });\n     });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n    cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, num_blocks) *\n                                           sycl::range<3>(1, 1, block_size),\n                                       sycl::range<3>(1, 1, block_size)),\n                     [=](sycl::nd_item<3> item_ct1) {\n                      map(d_pages, d_page_ranks, d_maps, d_noutlinks, n,\n                          item_ct1);\n                     });\n   });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, num_blocks) *\n                                              sycl::range<3>(1, 1, block_size),\n                                          sycl::range<3>(1, 1, block_size)),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          reduce(d_page_ranks, d_maps, n, d_diffs, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n    cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, num_blocks) *\n                                           sycl::range<3>(1, 1, block_size),\n                                       sycl::range<3>(1, 1, block_size)),\n                     [=](sycl::nd_item<3> item_ct1) {\n                      reduce(d_page_ranks, d_maps, n, d_diffs, item_ct1);\n                     });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/particle-diffusion/dpcpp/motionsim.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/particlefilter/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/pathfinder/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           prev_acc_ct1(sycl::range<1>(250), cgh);\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           result_acc_ct1(sycl::range<1>(250), cgh);\n \n       cgh.parallel_for(sycl::nd_range<3>(gridDim * blockDim, blockDim),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          pathfinder(d_gpuWall, d_gpuSrc, d_gpuResult,\n                                     d_outputBuffer, iteration, theHalo,\n                                     borderCols, cols, t, item_ct1,\n                                     prev_acc_ct1.get_pointer(),\n                                     result_acc_ct1.get_pointer());\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           prev_acc_ct1(sycl::range<1>(250), cgh);\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           result_acc_ct1(sycl::range<1>(250), cgh);\n \n       auto dpct_global_range = gridDim * blockDim;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                            dpct_global_range.get(1),\n                                            dpct_global_range.get(0)),\n                             sycl::range<3>(blockDim.get(2), blockDim.get(1),\n                                            blockDim.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             pathfinder(d_gpuWall, d_gpuSrc, d_gpuResult, d_outputBuffer,\n                        iteration, theHalo, borderCols, cols, t, item_ct1,\n                        prev_acc_ct1.get_pointer(),\n                        result_acc_ct1.get_pointer());\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/popcount/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          pc1(d_data, d_result, length, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             pc1(d_data, d_result, length, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          pc2(d_data, d_result, length, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             pc2(d_data, d_result, length, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          pc3(d_data, d_result, length, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             pc3(d_data, d_result, length, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          pc4(d_data, d_result, length, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             pc4(d_data, d_result, length, item_ct1);\n           });\n     });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          pc5(d_data, d_result, length, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = grids * threads;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             pc5(d_data, d_result, length, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/projectile/dpcpp/Projectile.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/qtclustering/dpcpp/QTC.dp.cpp": [
+        {
+            "dpct snippet": "   q_ct1.submit([&](sycl::handler &cgh) {\n     cgh.parallel_for(\n         sycl::nd_range<3>(sycl::range<3>(1, 1, thread_block_count) *\n                               sycl::range<3>(1, 1, tpb),\n                           sycl::range<3>(1, 1, tpb)),\n         [=](sycl::nd_item<3> item_ct1) {\n           compute_degrees((int *)indr_mtrx, (int *)degrees, point_count,\n                           max_degree, item_ct1);\n         });\n   });\n",
+            "manual snippets": "    q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(1, 1, thread_block_count) *\n                                 sycl::range<3>(1, 1, tpb),\n                             sycl::range<3>(1, 1, tpb)),\n           [=](sycl::nd_item<3> item_ct1) {\n              compute_degrees((int *)indr_mtrx, (int *)degrees, point_count,\n                              max_degree, item_ct1);\n           });\n    });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<float, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           dist_array_acc_ct1(sycl::range<1>(64 /*THREADSPERBLOCK*/), cgh);\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           point_index_array_acc_ct1(sycl::range<1>(64 /*THREADSPERBLOCK*/),\n                                     cgh);\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(1, 1, thread_block_count) *\n                                 sycl::range<3>(1, 1, tpb),\n                             sycl::range<3>(1, 1, tpb)),\n           [=](sycl::nd_item<3> item_ct1) {\n             QTC_device((float *)distance_matrix, (char *)Ai_mask,\n                        (char *)clustered_pnts_mask, (int *)indr_mtrx,\n                        (int *)cardnl, (int *)ungrpd_pnts_indr,\n                        (float *)dist_to_clust, (int *)degrees, point_count,\n                        max_point_count, max_degree, threshold, cwrank,\n                        active_node_count, total_thread_block_count, item_ct1,\n                        dist_array_acc_ct1.get_pointer(),\n                        point_index_array_acc_ct1.get_pointer());\n           });\n     });\n",
+            "manual snippets": "       q_ct1.submit([&](sycl::handler &cgh) {\n          sycl::accessor<float, 1, sycl::access::mode::read_write,\n                         sycl::access::target::local>\n          sycl::accessor<int, 1, sycl::access::mode::read_write,\n                         sycl::access::target::local>\n                                        cgh);\n \n          cgh.parallel_for(\n              sycl::nd_range<3>(sycl::range<3>(1, 1, thread_block_count) *\n                                    sycl::range<3>(1, 1, tpb),\n                                sycl::range<3>(1, 1, tpb)),\n              [=](sycl::nd_item<3> item_ct1) {\n                 QTC_device((float *)distance_matrix, (char *)Ai_mask,\n                            (char *)clustered_pnts_mask, (int *)indr_mtrx,\n                            (int *)cardnl, (int *)ungrpd_pnts_indr,\n                            (float *)dist_to_clust, (int *)degrees, point_count,\n                            max_point_count, max_degree, threshold, cwrank,\n                            active_node_count, total_thread_block_count,\n                            item_ct1, dist_array_acc_ct1.get_pointer(),\n                            point_index_array_acc_ct1.get_pointer());\n              });\n       });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<float, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           dist_array_acc_ct1(sycl::range<1>(64 /*THREADSPERBLOCK*/), cgh);\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           point_index_array_acc_ct1(sycl::range<1>(64 /*THREADSPERBLOCK*/),\n                                     cgh);\n       sycl::accessor<int, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           tmp_pnts_acc_ct1(sycl::range<1>(64 /*THREADSPERBLOCK*/), cgh);\n       sycl::accessor<int, 0, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           cnt_sh_acc_ct1(cgh);\n       sycl::accessor<bool, 0, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           flag_sh_acc_ct1(cgh);\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(1, 1, tpb),\n                             sycl::range<3>(1, 1, tpb)),\n           [=](sycl::nd_item<3> item_ct1) {\n             trim_ungrouped_pnts_indr_array(\n                 winner_index, (int *)ungrpd_pnts_indr, (float *)distance_matrix,\n                 (int *)result, (char *)Ai_mask, (char *)clustered_pnts_mask,\n                 (int *)indr_mtrx, (int *)cardnl, (float *)dist_to_clust,\n                 (int *)degrees, point_count, max_point_count, max_degree,\n                 threshold, item_ct1, dist_array_acc_ct1.get_pointer(),\n                 point_index_array_acc_ct1.get_pointer(),\n                 tmp_pnts_acc_ct1.get_pointer(), cnt_sh_acc_ct1.get_pointer(),\n                 flag_sh_acc_ct1.get_pointer());\n           });\n     });\n",
+            "manual snippets": "       q_ct1.submit([&](sycl::handler &cgh) {\n          sycl::accessor<float, 1, sycl::access::mode::read_write,\n                         sycl::access::target::local>\n          sycl::accessor<int, 1, sycl::access::mode::read_write,\n                         sycl::access::target::local>\n                                        cgh);\n          sycl::accessor<int, 1, sycl::access::mode::read_write,\n                         sycl::access::target::local>\n          sycl::accessor<int, 0, sycl::access::mode::read_write,\n                         sycl::access::target::local>\n              cnt_sh_acc_ct1(cgh);\n          sycl::accessor<bool, 0, sycl::access::mode::read_write,\n                         sycl::access::target::local>\n              flag_sh_acc_ct1(cgh);\n \n          cgh.parallel_for(\n              sycl::nd_range<3>(sycl::range<3>(1, 1, tpb),\n                                sycl::range<3>(1, 1, tpb)),\n              [=](sycl::nd_item<3> item_ct1) {\n                 trim_ungrouped_pnts_indr_array(\n                     winner_index, (int *)ungrpd_pnts_indr,\n                     (float *)distance_matrix, (int *)result, (char *)Ai_mask,\n                     (char *)clustered_pnts_mask, (int *)indr_mtrx,\n                     (int *)cardnl, (float *)dist_to_clust, (int *)degrees,\n                     point_count, max_point_count, max_degree, threshold,\n                     item_ct1, dist_array_acc_ct1.get_pointer(),\n                     point_index_array_acc_ct1.get_pointer(),\n                     tmp_pnts_acc_ct1.get_pointer(),\n                     cnt_sh_acc_ct1.get_pointer(),\n                     flag_sh_acc_ct1.get_pointer());\n              });\n       });\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, tpb),\n                                          sycl::range<3>(1, 1, tpb)),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          update_clustered_pnts_mask((char *)clustered_pnts_mask,\n                                                     (char *)Ai_mask,\n                                                     max_point_count, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "       q_ct1.submit([&](sycl::handler &cgh) {\n          cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, tpb),\n                                             sycl::range<3>(1, 1, tpb)),\n                           [=](sycl::nd_item<3> item_ct1) {\n                              update_clustered_pnts_mask(\n                                  (char *)clustered_pnts_mask, (char *)Ai_mask,\n                                  max_point_count, item_ct1);\n                           });\n       });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/quicksort/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/randomAccess/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     sycl::atomic<u64Int>(\n",
+            "manual snippets": "     sycl::atomic<u64Int>(\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/recursiveGaussian/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "         /*\n",
+            "manual snippets": "         /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        },
+        {
+            "dpct snippet": "         /*\n",
+            "manual snippets": "         /*\n"
+        },
+        {
+            "dpct snippet": "   /*\n",
+            "manual snippets": "   /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/recursiveGaussian/dpcpp/RecursiveGaussianHost.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/recursiveGaussian/dpcpp/shrUtils.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/reduction/dpcpp/reduction.dp.cpp": [
+        {
+            "dpct snippet": " /*\n",
+            "manual snippets": " /*\n"
+        },
+        {
+            "dpct snippet": " /*\n",
+            "manual snippets": " /*\n"
+        },
+        {
+            "dpct snippet": " DPCT1001:0: The statement could not be removed.\n",
+            "manual snippets": " /*\n"
+        },
+        {
+            "dpct snippet": "               << std::endl;\n",
+            "manual snippets": " DPCT1001:0: The statement could not be removed.\n"
+        },
+        {
+            "dpct snippet": "     sycl::atomic<int>(sycl::global_ptr<int>(out)).fetch_add(sum);\n",
+            "manual snippets": "           /*\n"
+        },
+        {
+            "dpct snippet": " }\n \n void atomic_reduction_v2(int *in, int* out, int arrayLength,\n                          sycl::nd_item<3> item_ct1) {\n",
+            "manual snippets": "           DPCT1009:3: SYCL uses exceptions to report errors and does not use the\n"
+        },
+        {
+            "dpct snippet": "     sycl::atomic<int>(sycl::global_ptr<int>(out)).fetch_add(sum);\n",
+            "manual snippets": "           error codes. The original code was commented out and a warning string\n"
+        },
+        {
+            "dpct snippet": " }\n \n void atomic_reduction_v4(int *in, int* out, int arrayLength,\n                          sycl::nd_item<3> item_ct1) {\n",
+            "manual snippets": "           was inserted. You need to rewrite this code.\n"
+        },
+        {
+            "dpct snippet": "     sycl::atomic<int>(sycl::global_ptr<int>(out)).fetch_add(sum);\n",
+            "manual snippets": "           */\n"
+        },
+        {
+            "dpct snippet": " }\n void atomic_reduction_v8(int *in, int* out, int arrayLength,\n                          sycl::nd_item<3> item_ct1) {\n",
+            "manual snippets": " }\n \n void atomic_reduction_v2(int *in, int* out, int arrayLength,\n                          sycl::nd_item<3> item_ct1) {\n"
+        },
+        {
+            "dpct snippet": "     sycl::atomic<int>(sycl::global_ptr<int>(out)).fetch_add(sum);\n",
+            "manual snippets": " }\n \n void atomic_reduction_v4(int *in, int* out, int arrayLength,\n                          sycl::nd_item<3> item_ct1) {\n"
+        },
+        {
+            "dpct snippet": " }\n \n void atomic_reduction_v16(int *in, int* out, int arrayLength,\n                           sycl::nd_item<3> item_ct1) {\n",
+            "manual snippets": " }\n void atomic_reduction_v8(int *in, int* out, int arrayLength,\n                          sycl::nd_item<3> item_ct1) {\n"
+        },
+        {
+            "dpct snippet": "     sycl::atomic<int>(sycl::global_ptr<int>(out)).fetch_add(sum);\n",
+            "manual snippets": " }\n \n void atomic_reduction_v16(int *in, int* out, int arrayLength,\n                           sycl::nd_item<3> item_ct1) {\n"
+        },
+        {
+            "dpct snippet": " }\n \n int main(int argc, char** argv)\n {\n",
+            "manual snippets": " }\n \n int main(int argc, char** argv)\n {\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(1, 1, blocks) *\n                                       sycl::range<3>(1, 1, threads),\n                                   sycl::range<3>(1, 1, threads)),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     atomic_reduction(in, out, arrayLength, item_ct1);\n                 });\n         });\n",
+            "manual snippets": " q_ct1.submit([&](sycl::handler &cgh) {\n cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, blocks) *\n                                        sycl::range<3>(1, 1, threads),\n                                    sycl::range<3>(1, 1, threads)),\n                  [=](sycl::nd_item<3> item_ct1) {\n                  atomic_reduction(in, out, arrayLength, item_ct1);\n                  });\n });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(1, 1, blocks) *\n                                       sycl::range<3>(1, 1, threads),\n                                   sycl::range<3>(1, 1, threads)),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     atomic_reduction_v2(in, out, arrayLength, item_ct1);\n                 });\n         });\n",
+            "manual snippets": " q_ct1.submit([&](sycl::handler &cgh) {\n cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, blocks) *\n                                        sycl::range<3>(1, 1, threads),\n                                    sycl::range<3>(1, 1, threads)),\n                  [=](sycl::nd_item<3> item_ct1) {\n                  atomic_reduction_v2(in, out, arrayLength, item_ct1);\n                  });\n });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(1, 1, blocks) *\n                                       sycl::range<3>(1, 1, threads),\n                                   sycl::range<3>(1, 1, threads)),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     atomic_reduction_v4(in, out, arrayLength, item_ct1);\n                 });\n         });\n",
+            "manual snippets": " q_ct1.submit([&](sycl::handler &cgh) {\n cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, blocks) *\n                                        sycl::range<3>(1, 1, threads),\n                                    sycl::range<3>(1, 1, threads)),\n                  [=](sycl::nd_item<3> item_ct1) {\n                  atomic_reduction_v4(in, out, arrayLength, item_ct1);\n                  });\n });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(1, 1, blocks) *\n                                       sycl::range<3>(1, 1, threads),\n                                   sycl::range<3>(1, 1, threads)),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     atomic_reduction_v8(in, out, arrayLength, item_ct1);\n                 });\n         });\n",
+            "manual snippets": " q_ct1.submit([&](sycl::handler &cgh) {\n cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, blocks) *\n                                        sycl::range<3>(1, 1, threads),\n                                    sycl::range<3>(1, 1, threads)),\n                  [=](sycl::nd_item<3> item_ct1) {\n                  atomic_reduction_v8(in, out, arrayLength, item_ct1);\n                  });\n });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(1, 1, blocks) *\n                                       sycl::range<3>(1, 1, threads),\n                                   sycl::range<3>(1, 1, threads)),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     atomic_reduction_v16(in, out, arrayLength, item_ct1);\n                 });\n         });\n",
+            "manual snippets": " q_ct1.submit([&](sycl::handler &cgh) {\n cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(1, 1, blocks) *\n                                        sycl::range<3>(1, 1, threads),\n                                    sycl::range<3>(1, 1, threads)),\n                  [=](sycl::nd_item<3> item_ct1) {\n                  atomic_reduction_v16(in, out, arrayLength, item_ct1);\n                  });\n });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/reverse/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/rng-wallace/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": " \n     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<float, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           pool_acc_ct1(\n               sycl::range<1>(\n               cgh);\n \n       cgh.parallel_for(sycl::nd_range<3>(rng_wallace_grid * rng_wallace_threads,\n                                          rng_wallace_threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          rng_wallace(seed, devPool, device_randomNumbers,\n                                      devicerngChi2Corrections, item_ct1,\n                                      pool_acc_ct1.get_pointer());\n                        });\n     });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n    sycl::accessor<float, 1, sycl::access::mode::read_write,\n                   sycl::access::target::local>\n        pool_acc_ct1(sycl::range<1>(\n                     cgh);\n \n    auto dpct_global_range = rng_wallace_grid * rng_wallace_threads;\n \n    cgh.parallel_for(\n        sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                         dpct_global_range.get(1),\n                                         dpct_global_range.get(0)),\n                          sycl::range<3>(rng_wallace_threads.get(2),\n                                         rng_wallace_threads.get(1),\n                                         rng_wallace_threads.get(0))),\n        [=](sycl::nd_item<3> item_ct1) {\n         rng_wallace(seed, devPool, device_randomNumbers,\n                     devicerngChi2Corrections, item_ct1,\n                     pool_acc_ct1.get_pointer());\n        });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/rsbench/dpcpp/init.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/rsbench/dpcpp/io.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/rsbench/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/rsbench/dpcpp/material.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/rsbench/dpcpp/simulation.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/rsbench/dpcpp/utils.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/rtm8/dpcpp/rtm8.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(nz_pad, ny_pad, nx_pad) *\n                                 sycl::range<3>(1, groupSize, groupSize),\n                             sycl::range<3>(1, groupSize, groupSize)),\n           [=](sycl::nd_item<3> item_ct1) {\n             rtm8(vsq_d, current_s_d, next_s_d, current_r_d, next_r_d, image_d,\n                  a_d, ArraySize, item_ct1);\n           });\n     });\n",
+            "manual snippets": "                 q_ct1.submit([&](sycl::handler &cgh) {\n                         cgh.parallel_for(\n                             sycl::nd_range<3>(\n                                 sycl::range<3>(nz_pad, ny_pad, nx_pad) *\n                                     sycl::range<3>(1, groupSize, groupSize),\n                                 sycl::range<3>(1, groupSize, groupSize)),\n                             [=](sycl::nd_item<3> item_ct1) {\n                                     rtm8(vsq_d, current_s_d, next_s_d,\n                                          current_r_d, next_r_d, image_d, a_d,\n                                          ArraySize, item_ct1);\n                             });\n                 });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/s3d/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/s3d/dpcpp/Option.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/s3d/dpcpp/OptionParser.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/sampling/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/scan/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "                 item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "                 item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/secp256k1/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/shuffle/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/simplemoc/dpcpp/io.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/simplemoc/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(grids * threads, threads),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          att(d_QSR_id, d_FAI_id, d_fine_flux, d_fine_source,\n                              d_sigT, d_state_flux, d_simd_vecs,\n                              fine_axial_intervals, egroups, segments, item_ct1);\n                        });\n     });\n",
+            "manual snippets": "   q_ct1.submit([&](sycl::handler &cgh) {\n    auto dpct_global_range = grids * threads;\n \n    cgh.parallel_for(\n        sycl::nd_range<3>(\n            sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                           dpct_global_range.get(0)),\n            sycl::range<3>(threads.get(2), threads.get(1), threads.get(0))),\n        [=](sycl::nd_item<3> item_ct1) {\n         att(d_QSR_id, d_FAI_id, d_fine_flux, d_fine_source, d_sigT,\n             d_state_flux, d_simd_vecs, fine_axial_intervals, egroups, segments,\n             item_ct1);\n        });\n   });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/snake/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "       q_ct1.submit([&](sycl::handler &cgh) {\n         cgh.parallel_for(sycl::nd_range<3>(grid * block, block),\n                          [=](sycl::nd_item<3> item_ct1) {\n                            sneaky_snake(Dev_ReadSeq, Dev_RefSeq, Dev_Results,\n                                         NumReads, F_ErrorThreshold, item_ct1);\n                          });\n       });\n",
+            "manual snippets": "    q_ct1.submit([&](sycl::handler &cgh) {\n     auto dpct_global_range = grid * block;\n \n     cgh.parallel_for(\n         sycl::nd_range<3>(\n             sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                            dpct_global_range.get(0)),\n             sycl::range<3>(block.get(2), block.get(1), block.get(0))),\n         [=](sycl::nd_item<3> item_ct1) {\n          sneaky_snake(Dev_ReadSeq, Dev_RefSeq, Dev_Results, NumReads,\n                       F_ErrorThreshold, item_ct1);\n         });\n    });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/softmax/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(sycl::nd_range<3>(global_work_size * local_work_size,\n                                          local_work_size),\n                        [=](sycl::nd_item<3> item_ct1) {\n                          softMax(numSlice, sliceSize, d_input, d_output,\n                                  item_ct1);\n                        });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       auto dpct_global_range = global_work_size * local_work_size;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(local_work_size.get(2), local_work_size.get(1),\n                              local_work_size.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             softMax(numSlice, sliceSize, d_input, d_output, item_ct1);\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/sort/dpcpp/main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/sosfil/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "       item_ct1.barrier();\n",
+            "manual snippets": "       item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "       item_ct1.barrier();\n",
+            "manual snippets": "       item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "         item_ct1.barrier();\n",
+            "manual snippets": "         item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<uint8_t, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           dpct_local_acc_ct1(sycl::range<1>(shared_mem), cgh);\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(blocksPerGrid * threadsPerBlock, threadsPerBlock),\n           [=](sycl::nd_item<3> item_ct1) {\n             sosfilt<T>(n_signals, n_samples, n_sections, zi_width, d_sos, d_zi,\n                        d_x, item_ct1, dpct_local_acc_ct1.get_pointer());\n           });\n     });\n",
+            "manual snippets": "     q_ct1.submit([&](sycl::handler &cgh) {\n       sycl::accessor<uint8_t, 1, sycl::access::mode::read_write,\n                      sycl::access::target::local>\n           dpct_local_acc_ct1(sycl::range<1>(shared_mem), cgh);\n \n       auto dpct_global_range = blocksPerGrid * threadsPerBlock;\n \n       cgh.parallel_for(\n           sycl::nd_range<3>(\n               sycl::range<3>(dpct_global_range.get(2), dpct_global_range.get(1),\n                              dpct_global_range.get(0)),\n               sycl::range<3>(threadsPerBlock.get(2), threadsPerBlock.get(1),\n                              threadsPerBlock.get(0))),\n           [=](sycl::nd_item<3> item_ct1) {\n             sosfilt<T>(n_signals, n_samples, n_sections, zi_width, d_sos, d_zi,\n                        d_x, item_ct1, dpct_local_acc_ct1.get_pointer());\n           });\n     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/sph/dpcpp/fileio.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/sph/dpcpp/fluid.dp.cpp": [
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n             cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(grid1D_FP) *\n                                                    sycl::range<3>(block1D),\n                                                sycl::range<3>(block1D)),\n                              [=](sycl::nd_item<3> item_ct1) {\n                                  updatePressures(d_fluid_particles, d_params,\n                                                  item_ct1);\n                              });\n         });\n",
+            "manual snippets": "         q_ct1.submit([&](sycl::handler &cgh) {\n             auto dpct_global_range =\n                 sycl::range<3>(grid1D_FP) * sycl::range<3>(block1D);\n             auto dpct_local_range = sycl::range<3>(block1D);\n \n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                                  dpct_global_range.get(1),\n                                                  dpct_global_range.get(0)),\n                                   sycl::range<3>(dpct_local_range.get(2),\n                                                  dpct_local_range.get(1),\n                                                  dpct_local_range.get(0))),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     updatePressures(d_fluid_particles, d_params, item_ct1);\n                 });\n         });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n             cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(grid1D_FP) *\n                                                    sycl::range<3>(block1D),\n                                                sycl::range<3>(block1D)),\n                              [=](sycl::nd_item<3> item_ct1) {\n                                  updateAccelerationsFP(d_fluid_particles,\n                                                        d_params, item_ct1);\n                              });\n         });\n",
+            "manual snippets": "         q_ct1.submit([&](sycl::handler &cgh) {\n             auto dpct_global_range =\n                 sycl::range<3>(grid1D_FP) * sycl::range<3>(block1D);\n             auto dpct_local_range = sycl::range<3>(block1D);\n \n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                                  dpct_global_range.get(1),\n                                                  dpct_global_range.get(0)),\n                                   sycl::range<3>(dpct_local_range.get(2),\n                                                  dpct_local_range.get(1),\n                                                  dpct_local_range.get(0))),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     updateAccelerationsFP(d_fluid_particles, d_params,\n                                           item_ct1);\n                 });\n         });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n             cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(grid1D_BP) *\n                                                    sycl::range<3>(block1D),\n                                                sycl::range<3>(block1D)),\n                              [=](sycl::nd_item<3> item_ct1) {\n                                  updateAccelerationsBP(d_fluid_particles,\n                                                        d_boundary_particles,\n                                                        d_params, item_ct1);\n                              });\n         });\n",
+            "manual snippets": "         q_ct1.submit([&](sycl::handler &cgh) {\n             auto dpct_global_range =\n                 sycl::range<3>(grid1D_BP) * sycl::range<3>(block1D);\n             auto dpct_local_range = sycl::range<3>(block1D);\n \n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                                  dpct_global_range.get(1),\n                                                  dpct_global_range.get(0)),\n                                   sycl::range<3>(dpct_local_range.get(2),\n                                                  dpct_local_range.get(1),\n                                                  dpct_local_range.get(0))),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     updateAccelerationsBP(d_fluid_particles,\n                                           d_boundary_particles, d_params,\n                                           item_ct1);\n                 });\n         });\n"
+        },
+        {
+            "dpct snippet": "         q_ct1.submit([&](sycl::handler &cgh) {\n             cgh.parallel_for(sycl::nd_range<3>(sycl::range<3>(grid1D_FP) *\n                                                    sycl::range<3>(block1D),\n                                                sycl::range<3>(block1D)),\n                              [=](sycl::nd_item<3> item_ct1) {\n                                  updatePositions(d_fluid_particles, d_params,\n                                                  item_ct1);\n                              });\n         });\n",
+            "manual snippets": "         q_ct1.submit([&](sycl::handler &cgh) {\n             auto dpct_global_range =\n                 sycl::range<3>(grid1D_FP) * sycl::range<3>(block1D);\n             auto dpct_local_range = sycl::range<3>(block1D);\n \n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(dpct_global_range.get(2),\n                                                  dpct_global_range.get(1),\n                                                  dpct_global_range.get(0)),\n                                   sycl::range<3>(dpct_local_range.get(2),\n                                                  dpct_local_range.get(1),\n                                                  dpct_local_range.get(0))),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     updatePositions(d_fluid_particles, d_params, item_ct1);\n                 });\n         });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/sph/dpcpp/geometry.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/sssp/dpcpp/kernel.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/sssp/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     int iter_local =\n",
+            "manual snippets": "     int iter_local =\n"
+        },
+        {
+            "dpct snippet": "     int n_t_local = sycl::atomic<int>(sycl::global_ptr<int>(n_t)).fetch_add(0);\n",
+            "manual snippets": "     int n_t_local = sycl::atomic<int>(sycl::global_ptr<int>(n_t)).fetch_add(0);\n"
+        },
+        {
+            "dpct snippet": "     int gray_shade_local =\n",
+            "manual snippets": "     int gray_shade_local =\n"
+        },
+        {
+            "dpct snippet": "         *base = sycl::atomic<int>(sycl::global_ptr<int>(&head[0]))\n",
+            "manual snippets": "         *base = sycl::atomic<int>(sycl::global_ptr<int>(&head[0]))\n"
+        },
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "                 *shift = sycl::atomic<int>(sycl::global_ptr<int>(&tail[0]))\n",
+            "manual snippets": "                 *shift = sycl::atomic<int>(sycl::global_ptr<int>(&tail[0]))\n"
+        },
+        {
+            "dpct snippet": "             item_ct1.barrier();\n",
+            "manual snippets": "             item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "             item_ct1.barrier();\n",
+            "manual snippets": "             item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "             item_ct1.barrier();\n",
+            "manual snippets": "             item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "             dpct::atomic_exchange(&color[pid], BLACK); // Node visited\n",
+            "manual snippets": "             dpct::atomic_exchange(&color[pid], BLACK); // Node visited\n"
+        },
+        {
+            "dpct snippet": "             int cur_cost =\n",
+            "manual snippets": "             int cur_cost =\n"
+        },
+        {
+            "dpct snippet": "                 int orig_cost =\n",
+            "manual snippets": "                 int orig_cost =\n"
+        },
+        {
+            "dpct snippet": "                     int old_color =\n",
+            "manual snippets": "                     int old_color =\n"
+        },
+        {
+            "dpct snippet": "             *base =\n",
+            "manual snippets": "             *base =\n"
+        },
+        {
+            "dpct snippet": "         item_ct1.barrier();\n",
+            "manual snippets": "         item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "         *shift = sycl::atomic<int>(sycl::global_ptr<int>(&tail[0]))\n",
+            "manual snippets": "         *shift = sycl::atomic<int>(sycl::global_ptr<int>(&tail[0]))\n"
+        },
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "         sycl::atomic<int>(sycl::global_ptr<int>(&iter[0])).fetch_add(1);\n",
+            "manual snippets": "         sycl::atomic<int>(sycl::global_ptr<int>(&iter[0])).fetch_add(1);\n"
+        },
+        {
+            "dpct snippet": "           q_ct1.submit([&](sycl::handler &cgh) {\n             sycl::accessor<int, 1, sycl::access::mode::read_write,\n                            sycl::access::target::local>\n             sycl::accessor<int, 0, sycl::access::mode::read_write,\n                            sycl::access::target::local>\n                 tail_bin_acc_ct1(cgh);\n \n             cgh.parallel_for(sycl::nd_range<3>(dimGrid * dimBlock, dimBlock),\n                              [=](sycl::nd_item<3> item_ct1) {\n                                SSSP_gpu(d_nodes, d_edges, d_cost, d_color,\n                                         d_qin, d_qout, d_num_t, d_head, d_tail,\n                                         d_threads_end, d_threads_run,\n                                         d_overflow, d_gray_shade, d_iter,\n                                         p.switching_limit, CPU_EXEC, item_ct1,\n                                         l_mem_acc_ct1.get_pointer(),\n                                         tail_bin_acc_ct1.get_pointer());\n                              });\n           });\n",
+            "manual snippets": "                     q_ct1.submit([&](sycl::handler &cgh) {\n                         sycl::accessor<int, 1, sycl::access::mode::read_write,\n                                        sycl::access::target::local>\n                             l_mem_acc_ct1(\n                         sycl::accessor<int, 0, sycl::access::mode::read_write,\n                                        sycl::access::target::local>\n                             tail_bin_acc_ct1(cgh);\n \n                         auto dpct_global_range = dimGrid * dimBlock;\n \n                         cgh.parallel_for(\n                             sycl::nd_range<3>(\n                                 sycl::range<3>(dpct_global_range.get(2),\n                                                dpct_global_range.get(1),\n                                                dpct_global_range.get(0)),\n                                 sycl::range<3>(dimBlock.get(2), dimBlock.get(1),\n                                                dimBlock.get(0))),\n                             [=](sycl::nd_item<3> item_ct1) {\n                                 SSSP_gpu(d_nodes, d_edges, d_cost, d_color,\n                                          d_qin, d_qout, d_num_t, d_head, d_tail,\n                                          d_threads_end, d_threads_run,\n                                          d_overflow, d_gray_shade, d_iter,\n                                          p.switching_limit, CPU_EXEC, item_ct1,\n                                          l_mem_acc_ct1.get_pointer(),\n                                          tail_bin_acc_ct1.get_pointer());\n                             });\n                     });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/stencil/dpcpp/stencil_1d.dp.cpp": [
+        {
+            "dpct snippet": "   item_ct1.barrier();\n",
+            "manual snippets": "   item_ct1.barrier();\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/streamcluster/dpcpp/streamcluster.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/testSNAP/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        },
+        {
+            "dpct snippet": "     /*\n",
+            "manual snippets": "     /*\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/testSNAP/dpcpp/utils.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/thomas/dpcpp/cuThomasBatch.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/thomas/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     q_ct1.submit([&](sycl::handler &cgh) {\n       cgh.parallel_for(\n           sycl::nd_range<3>(sycl::range<3>(1, 1, (N / BlockSize) + 1) *\n                                 sycl::range<3>(1, 1, BlockSize),\n                             sycl::range<3>(1, 1, BlockSize)),\n           [=](sycl::nd_item<3> item_ct1) {\n             cuThomasBatch(l_device, d_device, u_device, rhs_device, M, N);\n           });\n     });\n",
+            "manual snippets": "         q_ct1.submit([&](sycl::handler &cgh) {\n             cgh.parallel_for(\n                 sycl::nd_range<3>(sycl::range<3>(1, 1, (N / BlockSize) + 1) *\n                                       sycl::range<3>(1, 1, BlockSize),\n                                   sycl::range<3>(1, 1, BlockSize)),\n                 [=](sycl::nd_item<3> item_ct1) {\n                     cuThomasBatch(l_device, d_device, u_device, rhs_device, M,\n                                   N, item_ct1);\n                 });\n         });\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/transpose/dpcpp/main.dp.cpp": [
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        },
+        {
+            "dpct snippet": "     item_ct1.barrier();\n",
+            "manual snippets": "     item_ct1.barrier();\n"
+        }
+    ],
+    "../oneAPI-DirectProgramming-training/triad/dpcpp/triad.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/xsbench/dpcpp/GridInit.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/xsbench/dpcpp/io.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/xsbench/dpcpp/Main.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/xsbench/dpcpp/Materials.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/xsbench/dpcpp/Simulation.dp.cpp": [],
+    "../oneAPI-DirectProgramming-training/xsbench/dpcpp/XSutils.dp.cpp": []
+}
