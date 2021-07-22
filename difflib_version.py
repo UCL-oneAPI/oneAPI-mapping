@@ -8,6 +8,11 @@ def load_file(file_path):
     string_list = file_context.read_text()
     return string_list
 
+def warning_status_cache(l, a):
+    l.insert(0,a)
+    if len(l) > 2:
+        l.pop()
+    return l
 
 def count_bracket(string_statement):
     front_bracket_number = string_statement.count("{")
@@ -39,9 +44,9 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         diff_item = str(line)
         preprocessing_diff_collection.append(diff_item)
 
-    # print the context of the differ
-    for item in preprocessing_diff_collection:
-        print(item)
+    # print the context of the differ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # for item in preprocessing_diff_collection:
+    #     print(item)
 
     # define the flag will be used later
     warning_desc_start = False
@@ -62,6 +67,11 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
     # warning message
     warning_message = ""
+    warning_status = []
+    warning_desc_start_copy, warning_des_end_copy = False, False
+    # used to record the last time flag
+    warning_flag_cache = [0] * 2
+
     # use of detect warning message only record in one time
     w_massage_time = 0
     # warning detection: ensure there is no warning message followed
@@ -79,6 +89,24 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         i += 1
         # detect the warning description start
 
+        # if "DPCT" in line:
+        #     warning_desc_start_copy = True
+        #
+        # if '*/' in line and warning_desc_start_copy == True:
+        #     warning_des_end_copy = True
+        #
+        # if warning_desc_start_copy == True :
+        #     warning_status.append(warning_des_end_copy)
+        #     if warning_des_end_copy == False:
+        #         warning_message += str(line[1:])
+        #
+        # if warning_des_end_copy == True and warning_status[-2] == False and warning_desc_start_copy == True:
+        #     warning_message_version_snippets.append(warning_message)
+        #     warning_message == ""
+        #     warning_status = []
+        #     warning_desc_start_copy, warning_des_end_copy = False,False
+
+
 
         if "/*" in line and "DPCT" in preprocessing_diff_collection[i]:
             warning_desc_start = True
@@ -91,10 +119,15 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         if "*/" in line and warning_desc_start == True:
             #w_detect += 1
             if "/*" not in preprocessing_diff_collection[i]:
-                # print("&&&&&&&&&&&")
-                # print(preprocessing_diff_collection[i])
                 warning_desc_end = True
                 continue  # jump into another loop
+
+
+
+
+
+
+
 
         # if "/*" in line and warning_desc_end == True:
         #     warning_desc_end = False
@@ -122,6 +155,13 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
                     dpct_brackets_num += count_bracket(line)
                     dpct_code_snippet_string += (line[1:] + "\n")
+
+                    if dpct_extraction_complete == True and dpct_brackets_num == 0:
+                        manual_modified_version_snippets.append("")
+                            # warning_desc_end = False
+
+                        manual_extraction_complete = True
+
                     if dpct_brackets_num == 0 and line[-1] != "\\":
                         dpct_version_snippets.append(dpct_code_snippet_string)
                         dpct_code_snippet_string = ""
@@ -129,13 +169,12 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
                         # new added
                         after_mark = preprocessing_diff_collection[i]
+                        dpct_extraction_complete = True
                         # warning_desc_start = False
                         # warning_desc_end = False
-                        if after_mark[0] != "+" and after_mark[0] != "\\":
-                                manual_modified_version_snippets.append("")
-                                # warning_desc_end = False
 
-                                manual_extraction_complete = True
+
+
 
             if prefix == "+":
                 # print(count_bracket(line))
@@ -181,16 +220,19 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
                     manual_extraction_complete = True
 
-        if manual_extraction_complete == dpct_extraction_complete == True:
+        # if manual_extraction_complete == dpct_extraction_complete == True:
+        if dpct_extraction_complete == True and manual_extraction_complete == True:
             warning_desc_start = False
             warning_desc_end = False
 
+            # warning_des_end_copy, warning_desc_start_copy = False,False
+    # print(len(dpct_version_snippets),"----",len(manual_modified_version_snippets))
     return dpct_version_snippets,manual_modified_version_snippets,warning_message_version_snippets
 
 # change here!!!!! for testing !!!!!!
 #dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('compact.dp.cpp', 'compact.cpp')
-dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('../oneAPI-DirectProgramming-training/medianfilter/dpcpp/main.dp.cpp', '../oneAPI-DirectProgramming-training/medianfilter/dpct-version/main.cpp')
-print(dpct_snippets_result,manual_snippets_result,warning_message_version_snippets)
+# dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('../oneAPI-DirectProgramming-training/qtclustering/dpcpp/QTC.dp.cpp', '../oneAPI-DirectProgramming-training/qtclustering/dpct-version/QTC.cpp')
+# print(dpct_snippets_result,manual_snippets_result,warning_message_version_snippets)
 
 
 '''

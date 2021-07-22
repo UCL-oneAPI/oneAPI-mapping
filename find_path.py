@@ -3,22 +3,27 @@ import difflib_version
 
 allFileNum = 0
 mapping_result = {}
+non_matched_collection = {}  # this is the collection of the non matched snippets
+file_counter = 0
+test_dict = set()
+counter_1, counter_2 = 0, 0
+
 
 def file_existing_check(file_path):
     return os.path.exists(file_path)
 
+
 def printPath(level, path, root_dir):
-    global allFileNum,mapping_result
+    global allFileNum, mapping_result
 
     # define the map (collect the mapping)
-
 
     ''''' 
     打印一个目录下的所有文件夹和文件 
     '''
     # 所有文件夹，第一个字段是次目录的级别
     # get the root path for this function call
-
+    global file_counter, mapping_result, non_matched_collection, counter_1, counter_2
     dirList = []
     # 所有文件  
     fileList = []
@@ -36,42 +41,49 @@ def printPath(level, path, root_dir):
             fileList.append(f)
 
             # check the file surfix
-            if(f.endswith(".dp.cpp")):
+            if (f.endswith(".dp.cpp")):
 
                 # get the name of the dp.cpp file
                 sub_dir = path.replace("dpcpp", "").replace(root_dir, '')
-                a = "".join([path,"/",f])
-                # print("dpcpp:",a)
+                a = "".join([path, "/", f])
 
                 # get the name of the .cpp file
-                b  = ("".join([path,"/",str(f)])).replace("dpcpp", "dpct-version").replace('dp.cpp','cpp')
-                # print("dpct-version:",b)
+                b = ("".join([path, "/", str(f)])).replace("dpcpp", "dpct-version").replace('dp.cpp', 'cpp')
 
                 # check file existing
-                if(file_existing_check(a) and file_existing_check(b)):
+                if (file_existing_check(a) and file_existing_check(b)):
+                    test_dict.add(a)
                     file_name = a
-                    print("filename: ",a)
-                    dpct_snippets, manual_snippets,warning_messages = difflib_version.mapping_extraction(a, b)
-                    for i in range(len(dpct_snippets)):
-                        if a not in mapping_result.keys():
-                            mapping_result[a] = [{"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]}]
-                            # mapping_result[a] = [{"warning message":warning_messages[i],"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]}]
-                        else:
-                            mapping_result[a].append({"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]})
+                    print("filename: ", a)
+                    dpct_snippets, manual_snippets, warning_messages = difflib_version.mapping_extraction(a, b)
+                    file_counter += 1
+                    # currently only output the snippets which numbers matched
+                    if len(dpct_snippets) == len(manual_snippets):
+                        mapping_result[a] = []
+                        for i in range(len(dpct_snippets)):
+                            mapping_result[a].append(
+                                {"dpct snippet": dpct_snippets[i], "manual snippets": manual_snippets[i]})
+                        # if a not in mapping_result.keys():
+                        #     mapping_result[a] = [
+                        #         {"dpct snippet": dpct_snippets[i], "manual snippets": manual_snippets[i]}]
+                        #     # mapping_result[a] = [{"warning message":warning_messages[i],"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]}]
+                        # else:
+                        #     mapping_result[a].append(
+                        #         {"dpct snippet": dpct_snippets[i], "manual snippets": manual_snippets[i]})
                             # mapping_result[a].append({"warning message":warning_messages[i],"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]})
                         # mapping_result[a] = ({"dpct snippet":dpct_snippets[i],"manual snippets":manual_snippets[i]})
+                    else:
+                        counter_2 += 1
+                        non_matched_collection[a] = {"dpct snippet": dpct_snippets, "manual snippets": manual_snippets}
+                        # if a not in non_matched_collection.keys():
+                        #     non_matched_collection[a] = [{"dpct snippet":dpct_snippets,"manual snippets":manual_snippets}]
+                        # else:
+                        #     non_matched_collection[a].append({"dpct snippet":dpct_snippets,"manual snippets":manual_snippets})
+
                         # print(warning_messages[i])
     # print(mapping_result)
 
-
-                # Error message
-                # No such file or directory: '../oneAPI-DirectProgramming-training/diamond/dpct-version/masking.cpp'
-                #masking.dp.cpp
-                #dpcpp: ../oneAPI-DirectProgramming-training/diamond/dpcpp/masking.dp.cpp
-                #dpct-version: ../oneAPI-DirectProgramming-training/diamond/dpct-version/masking.cpp
-
-
-            ####可以利用os.path.splitext() 方法: 该方法返回两个元素, 第一个是路径去掉后缀的部分, 第二个是文件后缀:
+    ####可以利用os.path.splitext() 方法: 该方法返回两个元素, 第一个是路径去掉后缀的部分, 第二个是文件后缀:
 
     # -------------------------------print-----------------------------------
     # 当一个标志使用，文件夹列表第一个级别不打印  
@@ -94,10 +106,11 @@ def printPath(level, path, root_dir):
 def iterate_all_projects():
     folders = [f for f in os.listdir("../oneAPI-DirectProgramming-training/") if not f.startswith('.')]
     for folder in folders:
-        printPath(1, '../oneAPI-DirectProgramming-training/'+folder+'/dpcpp',
-                  '../oneAPI-DirectProgramming-training/'+folder)
+        printPath(1, '../oneAPI-DirectProgramming-training/' + folder + '/dpcpp',
+                  '../oneAPI-DirectProgramming-training/' + folder)
         # print('../oneAPI-DirectProgramming-training/'+folder+'/dpcpp')
         print("\n\n\n\n\n")
+
 
 if __name__ == '__main__':
     # 修改‘’中的目录为需要索引的根目录
@@ -106,4 +119,5 @@ if __name__ == '__main__':
 
     # test iterate_all_projects()
     iterate_all_projects()
+    print(file_counter)
     print("a")
