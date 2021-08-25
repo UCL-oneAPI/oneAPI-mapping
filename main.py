@@ -1,6 +1,6 @@
 import json
 import os
-import difflib_version
+import mapping_extraction
 import pandas as pd
 
 allFileNum = 0
@@ -58,7 +58,7 @@ def printPath(level, path, root_dir):
                     test_dict.add(a)
                     file_name = a
                     print("filename: ", a)
-                    dpct_snippets, manual_snippets, warning_messages = difflib_version.mapping_extraction(a, b)
+                    dpct_snippets, manual_snippets, warning_messages = mapping_extraction.mapping_extraction(a, b)
                     file_counter += 1
                     # currently only output the snippets which numbers matched
                     if len(dpct_snippets) == len(manual_snippets):
