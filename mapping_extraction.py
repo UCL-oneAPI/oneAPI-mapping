@@ -8,17 +8,20 @@ def load_file(file_path):
     string_list = file_context.read_text()
     return string_list
 
+
 def warning_status_cache(l, a):
-    l.insert(0,a)
+    l.insert(0, a)
     if len(l) > 2:
         l.pop()
     return l
+
 
 def count_bracket(string_statement):
     front_bracket_number = string_statement.count("{")
     back_bracket_number = string_statement.count("}")
     bracket_count = front_bracket_number - back_bracket_number
     return bracket_count
+
 
 def mapping_extraction(dpcpp_file_path, manual_file_path):
     # define the differ used
@@ -44,7 +47,7 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
         diff_item = str(line)
         preprocessing_diff_collection.append(diff_item)
 
-    # print the context of the differ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # print the context of the differ
     # for item in preprocessing_diff_collection:
     #     print(item)
 
@@ -82,83 +85,49 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
     after_mark = ""
 
     # loop through all lines
-    #for line in preprocessing_diff_collection:
+    # for line in preprocessing_diff_collection:
     i = 0
     while i < len(preprocessing_diff_collection):
         line = preprocessing_diff_collection[i]
         i += 1
         # detect the warning description start
 
-        # if "DPCT" in line:
-        #     warning_desc_start_copy = True
-        #
-        # if '*/' in line and warning_desc_start_copy == True:
-        #     warning_des_end_copy = True
-        #
-        # if warning_desc_start_copy == True :
-        #     warning_status.append(warning_des_end_copy)
-        #     if warning_des_end_copy == False:
-        #         warning_message += str(line[1:])
-        #
-        # if warning_des_end_copy == True and warning_status[-2] == False and warning_desc_start_copy == True:
-        #     warning_message_version_snippets.append(warning_message)
-        #     warning_message == ""
-        #     warning_status = []
-        #     warning_desc_start_copy, warning_des_end_copy = False,False
-
-
-
         if "/*" in line and "DPCT" in preprocessing_diff_collection[i]:
             warning_desc_start = True
-            before_mark = preprocessing_diff_collection[i-2]
+            before_mark = preprocessing_diff_collection[i - 2]
 
             manual_extraction_complete, dpct_extraction_complete = False, False
 
-
         # detect the warning description end
         if "*/" in line and warning_desc_start == True:
-            #w_detect += 1
+            # w_detect += 1
             if "/*" not in preprocessing_diff_collection[i]:
                 warning_desc_end = True
                 continue  # jump into another loop
 
-
-
-
-
-
-
-
-        # if "/*" in line and warning_desc_end == True:
-        #     warning_desc_end = False
-        #     print("In this if condition")
-        #     continue
-
         # detect the warning context start
-        if warning_desc_start ==  True:
-            #print("line:",line," i:",i)
+        if warning_desc_start == True:
+            # print("line:",line," i:",i)
             prefix = line[0]
-            if prefix == "-" :
-                #if warning_desc_end == False:
+            if prefix == "-":
+                # if warning_desc_end == False:
                 #    warning_message += (line[1:] + "\n")
                 #    w_massage_time = 0
 
-
                 # if the prefix is " "  == this line shown in dpct version
-                if warning_desc_end == True :
+                if warning_desc_end == True:
                     # warning message
-                    #if w_massage_time == 0:
+                    # if w_massage_time == 0:
                     #    warning_message_version_snippets.append(warning_message)
                     #    warning_message = ""
                     #    w_massage_time = 1
-
 
                     dpct_brackets_num += count_bracket(line)
                     dpct_code_snippet_string += (line[1:] + "\n")
 
                     if dpct_extraction_complete == True and dpct_brackets_num == 0:
                         manual_modified_version_snippets.append("")
-                            # warning_desc_end = False
+                        # warning_desc_end = False
 
                         manual_extraction_complete = True
 
@@ -173,14 +142,10 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                         # warning_desc_start = False
                         # warning_desc_end = False
 
-
-
-
             if prefix == "+":
                 # print(count_bracket(line))
                 manual_modified_brackets_num += count_bracket(line)
                 manual_modified_code_snippet_string += (line[1:] + "\n")
-                # print("+++++++++++++++++++",manual_modified_brackets_num)
                 if manual_modified_brackets_num == 0 and line[-1] != "\\":
                     manual_modified_version_snippets.append(manual_modified_code_snippet_string)
                     manual_modified_code_snippet_string = ""
@@ -191,17 +156,13 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
                     # set extraction complete flag
                     manual_extraction_complete = True
 
-
-
             # if the prefix is " "  == this line shown in both version
-            if prefix == " " :
+            if prefix == " ":
                 dpct_brackets_num += count_bracket(line)
                 manual_modified_brackets_num += count_bracket(line)
                 dpct_code_snippet_string += (line[1:] + "\n")
-                #print("----------------------------- ：",dpct_code_snippet_string,"00000")
                 manual_modified_code_snippet_string += (line[1:] + "\n")
                 if dpct_brackets_num == 0 and line[-2] != "\\" and line[1:] != ' ':
-
                     dpct_version_snippets.append(dpct_code_snippet_string)
                     dpct_code_snippet_string = ""
                     dpct_brackets_num = 0
@@ -227,108 +188,4 @@ def mapping_extraction(dpcpp_file_path, manual_file_path):
 
             # warning_des_end_copy, warning_desc_start_copy = False,False
     # print(len(dpct_version_snippets),"----",len(manual_modified_version_snippets))
-    return dpct_version_snippets,manual_modified_version_snippets,warning_message_version_snippets
-
-# change here!!!!! for testing !!!!!!
-#dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('compact.dp.cpp', 'compact.cpp')
-# dpct_snippets_result, manual_snippets_result,warning_message_version_snippets = mapping_extraction('../oneAPI-DirectProgramming-training/qtclustering/dpcpp/QTC.dp.cpp', '../oneAPI-DirectProgramming-training/qtclustering/dpct-version/QTC.cpp')
-# print(dpct_snippets_result,manual_snippets_result,warning_message_version_snippets)
-
-
-'''
-# define the differ used
-diff_module = difflib.Differ()
-# use html differ to generate html diagram
-html_diff = difflib.HtmlDiff()
-
-# get the context of two files
-dpct_version_string_list = load_file('main.dp.cpp')
-manual_modified_string_list = load_file('main.cpp')
-dpct_version_string_list = dpct_version_string_list.splitlines()
-manual_modified_string_list = manual_modified_string_list.splitlines()
-
-# using the differ to generate the "differ" collection
-# diff = difflib.context_diff(dpct_version_string_list, manual_modified_string_list)
-diff = diff_module.compare(dpct_version_string_list, manual_modified_string_list)
-
-# define the differ_collection
-preprocessing_diff_collection = []
-for line in diff:
-    diff_item = str(line)
-    preprocessing_diff_collection.append(diff_item)
-
-for item in preprocessing_diff_collection:
-    print(item)
-
-# define the flag will be used later
-warning_desc_start = False
-warning_desc_end = False
-
-dpct_version_snippets = []
-manual_modified_version_snippets = []
-dpct_brackets_num = 0
-manual_modified_brackets_num = 0
-
-dpct_code_snippet_string = ""
-manual_modified_code_snippet_string = ""
-
-# loop through all lines
-for line in preprocessing_diff_collection:
-    # detect the warning description start
-    if "DPCT" in line:
-        warning_desc_start = True
-
-    # detect the warning description end
-    if "*/" in line and warning_desc_start == True:
-        warning_desc_end = True
-        continue  # jump into another loop
-
-    # detect the warning context start
-    if warning_desc_start == warning_desc_end == True:
-        prefix = line[0]
-
-        # if the prefix is " "  == this line shown in dpct version
-        if prefix == "-":
-            dpct_brackets_num += count_bracket(line)
-            dpct_code_snippet_string += (line[1:]+"\n")
-            if dpct_brackets_num == 0:
-                dpct_version_snippets.append(dpct_code_snippet_string)
-                dpct_code_snippet_string = ""
-                dpct_brackets_num = 0
-                # warning_desc_start = False
-                # warning_desc_end = False
-
-        if prefix == "+":
-            print(count_bracket(line))
-            manual_modified_brackets_num += count_bracket(line)
-            manual_modified_code_snippet_string += (line[1:] + "\n")
-            if manual_modified_brackets_num == 0:
-                print("in it ")
-                manual_modified_version_snippets.append(manual_modified_code_snippet_string)
-                manual_modified_code_snippet_string = ""
-                manual_modified_brackets_num = 0
-                warning_desc_start = False
-                warning_desc_end = False
-
-
-        # if the prefix is " "  == this line shown in both version
-        if prefix == " ":
-            dpct_brackets_num += count_bracket(line)
-            manual_modified_brackets_num += count_bracket(line)
-            dpct_code_snippet_string += (line[1:]+"\n")
-            manual_modified_code_snippet_string += (line[1:]+"\n")
-            if dpct_brackets_num == 0:
-                dpct_version_snippets.append(dpct_code_snippet_string)
-                dpct_code_snippet_string = ""
-                dpct_brackets_num = 0
-                warning_desc_start = False
-                warning_desc_end = False
-
-            if manual_modified_brackets_num == 0:
-                manual_modified_version_snippets.append(manual_modified_code_snippet_string)
-                manual_modified_code_snippet_string = ""
-                manual_modified_brackets_num = 0
-                warning_desc_start = False
-                warning_desc_end = False
-'''
-
+    return dpct_version_snippets, manual_modified_version_snippets, warning_message_version_snippets
