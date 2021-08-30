@@ -13,5 +13,5 @@ All the functions are contained in the main.py in this repository. To run all of
 ```
 python main.py
 ```
-
+The csv and report and corresponding json file will be generated in the root directory in this repository folder.
 
