@@ -3,6 +3,7 @@
 
  This tools can be later used by other developers which also want to make further development on CTA or oneAPI.
 
+# main functions
  Mapping tools will:
  * Automatically process the two version of the project source code, and return a mapping dictionary which contains the code segement for different warnings. \
  (dictionary structure: {file name:  {dpct_snippets: " " ,manual_snippets:" "}} )
