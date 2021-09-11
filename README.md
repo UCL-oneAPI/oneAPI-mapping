@@ -10,9 +10,11 @@
  * Based on the mapping extraction result, this tools will automatically generate a report which constains the comparision of code snippets(dpct version and manual modified version) 
 
  # User Guide
-All the functions are contained in the main.py in this repository. To run all of the functions you need to use the following command.  
-```
-python main.py
-```
-The csv and report and corresponding json file will be generated in the root directory in this repository folder.
+In order to run the mapping-tool, you need to  
+1. Move the sample data collection("oneAPI-DirectProgramming-training") in the same parent directory as mapping-tool repository.  
+2. cd into the mapping-tool folder by using command `cd oneAPI-mapping` in the command line
+3. run command `./automatically_dpct.sh`
+4. All the functions are contained in the main.py in this repository. To run all of the functions you need to use the following command. `python main.py`  
+
+Then the csv and report and corresponding json file will be generated in the root directory in this repository folder.
 
